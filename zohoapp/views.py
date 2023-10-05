@@ -4920,6 +4920,8 @@ def draft_recurring_bills(request):
         # cname = request.POST.get('customer').split(" ")[1:]
         vname  = request.POST.get('vendor')
         cname = request.POST.get('customer')
+        #cus=customer.objects.get(customerName=cname)   
+        custo=cust.id 
         # cname = " ".join(cname)
         v_gst_no=request.POST.get('gstin_inp')   # haripriya add
         src_supply = request.POST.get('srcofsupply')
@@ -4962,7 +4964,7 @@ def draft_recurring_bills(request):
                     source_supply=src_supply,repeat_every = repeat,start_date = start,end_date = end,
                     payment_terms =pay_term,sub_total=sub_total,sgst=sgst,cgst=cgst,igst=igst,
                     tax_amount=tax1, shipping_charge = shipping_charge,
-                    grand_total=grand_total,note=note,company=company,user = u, bill_no = bill_no,status = status, payment_method=payment_method, amt_paid=amt_paid,  adjustment = adjustment )
+                    grand_total=grand_total,note=note,company=company,user = u,cname_recur_id=custo, bill_no = bill_no,status = status, payment_method=payment_method, amt_paid=amt_paid,  adjustment = adjustment )
         bills.save()
 
         r_bill = recurring_bills.objects.get(id=bills.id)
@@ -5065,6 +5067,7 @@ def change_recurring_bills(request,id):
     company = company_details.objects.get(user = request.user)
     # cust = customer.objects.get(customerName=request.POST.get('customer').strip(" "),user = request.user)
     r_bill=recurring_bills.objects.get(user = request.user,id=id)
+    cust = customer.objects.get(id=request.POST.get('customer').split(" ")[0],user = request.user)
 
     if request.method == 'POST':
         
@@ -5093,6 +5096,8 @@ def change_recurring_bills(request,id):
         grand_total = request.POST.get('grand_total')
         amt_paid = request.POST['amtPaid']
         r_bill.balance = float(grand_total) - float(amt_paid)
+
+        r_bill.cname_recur_id = cust.id
 
         if len(request.FILES) != 0:
              
@@ -5152,11 +5157,15 @@ def change_recurring_bills(request,id):
         return redirect('view_recurring_bills',id)
     return redirect('recurring_bill')
 
+
+
+
 def change_draft_recurring_bills(request,id):
             
     company = company_details.objects.get(user = request.user)
     # cust = customer.objects.get(customerName=request.POST.get('customer').strip(" "),user = request.user)
     r_bill=recurring_bills.objects.get(user = request.user,id=id)
+    cust = customer.objects.get(id=request.POST.get('customer').split(" ")[0],user = request.user)
 
     if request.method == 'POST':
         
@@ -5183,7 +5192,9 @@ def change_draft_recurring_bills(request,id):
         r_bill.status = 'Draft'
         grand_total = request.POST.get('grand_total')
         amt_paid = request.POST['amtPaid']
+        
         r_bill.balance = float(grand_total) - float(amt_paid)
+        r_bill.cname_recur_id = cust.id
 
         if len(request.FILES) != 0:
              
@@ -15669,3 +15680,180 @@ def delete_purchase_bill(request,id):
     Bills=PurchaseBills.objects.get(id=id)
     Bills.delete()
     return redirect('view_bills')
+
+def covert_to_recurring_bills(request, id): 
+    
+    r_bill = recurring_bills.objects.get(user=request.user, id=id)
+    
+    if r_bill.status == 'Draft':
+        r_bill.status = 'Save'
+    elif r_bill.status == 'Save':
+        r_bill.status = 'Draft'
+    r_bill.save()  
+    
+    return redirect('view_recurring_bills', id)
+
+@login_required(login_url='login')
+def recur_bill_save(request,id):
+    company = company_details.objects.get(user = request.user)
+    bills = recurring_bills.objects.filter(user = request.user, status = 'Save')
+    rbill=recurring_bills.objects.get(user = request.user, id= id)
+    billitem = recurring_bills_items.objects.filter(user = request.user,recur_bills=id) 
+    comment = rec_comments.objects.filter(recur_bills_id=rbill) 
+    cust = customer.objects.get(id = rbill.customer_name.split(" ")[0])
+    vend = vendor_table.objects.get(id = rbill.vendor_name.split(" ")[0])
+    gst_or_igst = "GST" if company.state == (" ".join(rbill.source_supply.split(" ")[1:])) else "IGST"
+    tax_total = [] 
+    for b in billitem:
+        if b.tax not in tax_total: 
+            tax_total.append(b.tax)
+    
+    cust_name = cust.customerName
+    vend_name = vend.salutation+ " " +vend.first_name + " " +vend.last_name
+    context = {
+                'company' : company,
+                'recur_bills' : bills,
+                'recur_bill' : rbill,
+                'bill_item' : billitem,
+                'tax' : tax_total,
+                "gst_or_igst" : gst_or_igst,
+                'customer' : cust,
+                'vendor' : vend,
+                'customer_name' : cust_name,
+                'vendor_name' : vend_name,
+                'comments':comment
+            }
+
+    return render(request, 'view_recurring_bills.html',context)
+
+@login_required(login_url='login')
+def recur_bill_draft(request,id):
+    company = company_details.objects.get(user = request.user)
+    bills = recurring_bills.objects.filter(user = request.user, status = 'Draft')
+    rbill=recurring_bills.objects.get(user = request.user, id= id)
+    billitem = recurring_bills_items.objects.filter(user = request.user,recur_bills=id) 
+    comment = rec_comments.objects.filter(recur_bills_id=rbill) 
+    cust = customer.objects.get(id = rbill.customer_name.split(" ")[0])
+    vend = vendor_table.objects.get(id = rbill.vendor_name.split(" ")[0])
+    gst_or_igst = "GST" if company.state == (" ".join(rbill.source_supply.split(" ")[1:])) else "IGST"
+    tax_total = [] 
+    for b in billitem:
+        if b.tax not in tax_total: 
+            tax_total.append(b.tax)
+    
+    cust_name = cust.customerName
+    vend_name = vend.salutation+ " " +vend.first_name + " " +vend.last_name
+    context = {
+                'company' : company,
+                'recur_bills' : bills,
+                'recur_bill' : rbill,
+                'bill_item' : billitem,
+                'tax' : tax_total,
+                "gst_or_igst" : gst_or_igst,
+                'customer' : cust,
+                'vendor' : vend,
+                'customer_name' : cust_name,
+                'vendor_name' : vend_name,
+                'comments':comment
+            }
+
+    return render(request, 'view_recurring_bills.html',context)
+
+@login_required(login_url='login')
+def billno_recurring_sort(request,id):
+    company = company_details.objects.get(user = request.user)
+    bills = recurring_bills.objects.filter(user = request.user).order_by('bill_no')
+    rbill=recurring_bills.objects.get(user = request.user, id= id)
+    billitem = recurring_bills_items.objects.filter(user = request.user,recur_bills=id) 
+    comment = rec_comments.objects.filter(recur_bills_id=rbill) 
+    cust = customer.objects.get(id = rbill.customer_name.split(" ")[0])
+    vend = vendor_table.objects.get(id = rbill.vendor_name.split(" ")[0])
+    gst_or_igst = "GST" if company.state == (" ".join(rbill.source_supply.split(" ")[1:])) else "IGST"
+    tax_total = [] 
+    for b in billitem:
+        if b.tax not in tax_total: 
+            tax_total.append(b.tax)
+    
+    cust_name = cust.customerName
+    vend_name = vend.salutation+ " " +vend.first_name + " " +vend.last_name
+    context = {
+                'company' : company,
+                'recur_bills' : bills,
+                'recur_bill' : rbill,
+                'bill_item' : billitem,
+                'tax' : tax_total,
+                "gst_or_igst" : gst_or_igst,
+                'customer' : cust,
+                'vendor' : vend,
+                'customer_name' : cust_name,
+                'vendor_name' : vend_name,
+                'comments':comment
+            }
+
+    return render(request, 'view_recurring_bills.html',context)
+
+@login_required(login_url='login')
+def vendor_recurring_sort(request,id):
+    company = company_details.objects.get(user = request.user)
+    bills = recurring_bills.objects.filter(user = request.user).order_by('vendor_name')
+    rbill=recurring_bills.objects.get(user = request.user, id= id)
+    billitem = recurring_bills_items.objects.filter(user = request.user,recur_bills=id) 
+    comment = rec_comments.objects.filter(recur_bills_id=rbill) 
+    cust = customer.objects.get(id = rbill.customer_name.split(" ")[0])
+    vend = vendor_table.objects.get(id = rbill.vendor_name.split(" ")[0])
+    gst_or_igst = "GST" if company.state == (" ".join(rbill.source_supply.split(" ")[1:])) else "IGST"
+    tax_total = [] 
+    for b in billitem:
+        if b.tax not in tax_total: 
+            tax_total.append(b.tax)
+    
+    cust_name = cust.customerName
+    vend_name = vend.salutation+ " " +vend.first_name + " " +vend.last_name
+    context = {
+                'company' : company,
+                'recur_bills' : bills,
+                'recur_bill' : rbill,
+                'bill_item' : billitem,
+                'tax' : tax_total,
+                "gst_or_igst" : gst_or_igst,
+                'customer' : cust,
+                'vendor' : vend,
+                'customer_name' : cust_name,
+                'vendor_name' : vend_name,
+                'comments':comment
+            }
+
+    return render(request, 'view_recurring_bills.html',context)
+
+@login_required(login_url='login')
+def profilename_recurring_sort(request,id):
+    company = company_details.objects.get(user = request.user)
+    bills = recurring_bills.objects.filter(user = request.user).order_by('profile_name')
+    rbill=recurring_bills.objects.get(user = request.user, id= id)
+    billitem = recurring_bills_items.objects.filter(user = request.user,recur_bills=id) 
+    comment = rec_comments.objects.filter(recur_bills_id=rbill) 
+    cust = customer.objects.get(id = rbill.customer_name.split(" ")[0])
+    vend = vendor_table.objects.get(id = rbill.vendor_name.split(" ")[0])
+    gst_or_igst = "GST" if company.state == (" ".join(rbill.source_supply.split(" ")[1:])) else "IGST"
+    tax_total = [] 
+    for b in billitem:
+        if b.tax not in tax_total: 
+            tax_total.append(b.tax)
+    
+    cust_name = cust.customerName
+    vend_name = vend.salutation+ " " +vend.first_name + " " +vend.last_name
+    context = {
+                'company' : company,
+                'recur_bills' : bills,
+                'recur_bill' : rbill,
+                'bill_item' : billitem,
+                'tax' : tax_total,
+                "gst_or_igst" : gst_or_igst,
+                'customer' : cust,
+                'vendor' : vend,
+                'customer_name' : cust_name,
+                'vendor_name' : vend_name,
+                'comments':comment
+            }
+
+    return render(request, 'view_recurring_bills.html',context)

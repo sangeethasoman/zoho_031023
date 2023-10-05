@@ -746,8 +746,12 @@ urlpatterns = [
     path('add_rec_comments/<int:id>', views.add_rec_comments, name='add_rec_comments'),
     path('delete_rec_comments/<int:id>/<int:commentid>', views.delete_rec_comments, name='delete_rec_comments'),
     path('change_draft_recurring_bills/<int:id>/',views.change_draft_recurring_bills,name='change_draft_recurring_bills'), 
-    
-    
+    path('covert_to_recurring_bills/<int:id>/',views.covert_to_recurring_bills,name='covert_to_recurring_bills'),
+    path('recur_bill_save/<int:id>',views.recur_bill_save,name='recur_bill_save'),
+    path('recur_bill_draft/<int:id>',views.recur_bill_draft,name='recur_bill_draft'),
+    path('billno_recurring_sort/<int:id>',views.billno_recurring_sort,name='billno_recurring_sort'),
+    path('vendor_recurring_sort/<int:id>',views.vendor_recurring_sort,name='vendor_recurring_sort'),
+    path('profilename_recurring_sort/<int:id>',views.profilename_recurring_sort,name='profilename_recurring_sort'),
     
     
 ]

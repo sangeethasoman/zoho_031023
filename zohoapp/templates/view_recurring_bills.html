@@ -261,6 +261,28 @@
         background-color: #555;
     }
 
+    .slip {
+        /* position: absolute; */
+        overflow: hidden;
+    }
+
+    .ribbon {
+        position: relative;
+        top: -20px;
+        left: -80px;
+
+        width: 140px;
+
+        background-color: rgb(95, 91, 100);
+        transform: rotate(-45deg);
+        text-align: center;
+        color: #fff;
+
+        font-size: 15px;
+        overflow: hidden;
+
+    }
+
   
 </style>
 
@@ -280,19 +302,18 @@
                         </div>
                     
                         <div class="col-md-6 mt-2">
-                            <a class="btn text-center btn-primary fa fa-filter px-1 py-1" data-bs-toggle="dropdown" role="button"></a>
+                            <a class="btn text-center btn-primary fa fa-filter px-1 py-1 ml-2" data-bs-toggle="dropdown" role="button"></a>
                             <div class="dropdown-menu" style="z-index: 1;">
-                                <a class="dropdown-item dropdown-sort">All</a>
-                                <a class="dropdown-item dropdown-sort">Bill No:</a>
-                                <a class="dropdown-item dropdown-sort">Vendor A-Z</a>
-                                <a class="dropdown-item dropdown-sort">Profile Name A-Z</a>
+                                <a class="dropdown-item dropdown-filter" href="{% url 'view_recurring_bills' recur_bill.id %}">All</a>
+                                <a class="dropdown-item dropdown-filter" href="{% url 'recur_bill_save' recur_bill.id %}">Save</a>
+                                <a class="dropdown-item dropdown-filter" href="{% url 'recur_bill_draft' recur_bill.id %}">Draft</a>
                             </div>
-                    
-                            <a class="btn text-center btn-primary fa fa-sort px-1 py-1 ml-2" data-bs-toggle="dropdown" role="button"></a>
+                            <a class="btn text-center btn-primary fa fa-sort px-1 py-1" data-bs-toggle="dropdown" role="button"></a>
                             <div class="dropdown-menu" style="z-index: 1;">
-                                <a class="dropdown-item dropdown-filter">All</a>
-                                <a class="dropdown-item dropdown-filter">Save</a>
-                                <a class="dropdown-item dropdown-filter">Draft</a>
+                                <a class="dropdown-item dropdown-sort" href="{% url 'view_recurring_bills' recur_bill.id %}">All</a>
+                                <a class="dropdown-item dropdown-sort" href="{% url 'billno_recurring_sort' recur_bill.id %}">Bill No:</a>
+                                <a class="dropdown-item dropdown-sort" href="{% url 'vendor_recurring_sort' recur_bill.id %}">Vendor A-Z</a>
+                                <a class="dropdown-item dropdown-sort" href="{% url 'profilename_recurring_sort' recur_bill.id %}">Profile Name A-Z</a>
                             </div>
                     
                             <a href="{% url 'add_recurring_bills' %}" class="btn btn-primary fa fa-plus px-3 pt-1 ml-2" role="button"></a>
@@ -336,8 +357,8 @@
                     
 
                     
-                    <a href="{% url 'edit_recurring_bills' recur_bill.id %}" class=" fa fa-arrows-h btns px-2 py-2"
-                    data-toggle="tooltip" title="CONVERT"> </a>&nbsp;
+                    <a href="{% url 'covert_to_recurring_bills' recur_bill.id %}" class=" fa fa-arrows-h btns px-2 py-2"
+                    data-toggle="tooltip" title="CONVERT" > </a>&nbsp;
                     <a href="" class=" far fa-comment-alt btns px-2 py-2" title="COMMENTS"
                     data-toggle="modal" data-target="#cmnts"> </a>&nbsp;
                         <a href="{% url 'edit_recurring_bills' recur_bill.id %}" class=" fa fa-pencil btns px-2 py-2"
@@ -396,7 +417,10 @@
             <hr class="hr">
 
 
-            <div id="Template" class=" print-only page tabcontent p-5 m-3" style="display: block; background-color:azure">
+            <div id="Template" class=" print-only page tabcontent p-5 m-3" style="display: block; background-color:azure" class="slip m-3 p-5  bg-light" id="whatToPrint"
+            style="box-shadow: 5px 5px 10px rgb(45, 45, 45);">
+                
+                <div class="ribbon">{{ recur_bill.status }}</div>
                 <div class="row pt-0 m-0 text-center">
                     <div class="col-4 "></div>
                     <div class="col-4 ">
@@ -569,7 +593,7 @@
                         </div>
                     </div>
                 </section>
-
+             
             </div>
 
 
@@ -609,7 +633,7 @@
 
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey ">Profile Name :</h6>
+                                    <h6 class="mb-0 text-grey ">Profile Name </h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <p class="mb-0 " style="font-size: 18px; color: #434141;">{{ recur_bill.profile_name }}</p>
@@ -618,7 +642,7 @@
 
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey " >Repeat Every :</h6>
+                                    <h6 class="mb-0 text-grey " >Repeat Every </h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.repeat_every }}</p>
@@ -626,7 +650,7 @@
                             </div>
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Start Date :</h6>
+                                    <h6 class="mb-0 text-grey">Start Date </h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.start_date |date:'d-m-Y' }}</p>
@@ -637,7 +661,7 @@
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
 
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">End Date :</h6>
+                                    <h6 class="mb-0 text-grey">End Date</h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.end_date |date:'d-m-Y' }}</p>
@@ -646,7 +670,7 @@
 
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Payment Terms:</h6>
+                                    <h6 class="mb-0 text-grey">Payment Terms</h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <p class="mb-0" style="font-size: 18px; color: #434141;"> NET {{ recur_bill.payment_terms }}</p>
@@ -655,7 +679,7 @@
 
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Payment Method:</h6>
+                                    <h6 class="mb-0 text-grey">Payment Method</h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.payment_method }}</p>
@@ -664,7 +688,7 @@
 
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Tax :</h6>
+                                    <h6 class="mb-0 text-grey">Tax </h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <span style="font-size: 18px; color: #434141;">{{ gst_or_igst }} - </span>
@@ -676,7 +700,7 @@
                             </div>
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Source of Supply :</h6>
+                                    <h6 class="mb-0 text-grey">Source of Supply</h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <p class="mb-0 text-capitalize" style="font-size: 18px; color: #434141;">{{ recur_bill.source_supply }}</p>
@@ -685,21 +709,21 @@
                             </div>
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
                                 <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Note :</h6>
+                                    <h6 class="mb-0 text-grey">Note</h6>
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <p class="mb-0 text-capitalize" style="font-size: 18px; color: #434141;">{{ recur_bill.note }}</p>
                                 </div>
 
                             </div>
-                            <!-- <hr class="my-4"> -->
+                           
                         </div>
                     </div>
                     <div class="col-md-5  " style="background-color:#8b3131; border-radius: 5px;" >
                         <div class="p-5">
                             <div class="d-block justify-content-between mb-5">
                                 <div class="col-md-12 mt-3">
-                                    <h5 style="color: #ccc;">Vendor :</h5>
+                                    <h5 style="color: #ccc;">Vendor</h5>
                                 </div><br>
                                 <div class="col-md-12 my-0 mx-5">
                                     <h6 class="text-capitalize" style="color: azure;">{{ vendor_name }}</h6>
@@ -707,7 +731,7 @@
                             </div>
                             <div class="d-block justify-content-between mb-5">
                                 <div class="col-md-12 mt-3">
-                                    <h5 style="color: #ccc;">Customer :</h5>
+                                    <h5 style="color: #ccc;">Customer</h5>
                                 </div><br>
                                 <div class="col-md-12 my-0 mx-5">
                                     <h6 class="text-capitalize " style="color: azure;">{{ customer_name }}
@@ -719,7 +743,7 @@
 
                             <div class="d-flex justify-content-between mb-5">
                                 <div class="col-md-5 mt-3">
-                                    <h6 style="color: #ccc;">Subtotal :</h5><br>
+                                    <h6 style="color: #ccc;">Subtotal</h5><br>
                                 </div>
                                 <div class="col-md-7 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.sub_total|floatformat:2 }} INR" class="amnt"
@@ -728,7 +752,7 @@
                             </div>
                             <div class="justify-content-between mb-5 d-none" id="igst">
                                 <div class="col-md-4 mt-3">
-                                    <h6 style="color: #ccc;">IGST :</h5><br>
+                                    <h6 style="color: #ccc;">IGST</h5><br>
                                 </div>
                                 <div class="col-md-8 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.igst|floatformat:2 }} INR" class="amnt"
@@ -737,7 +761,7 @@
                             </div>
                             <div class=" justify-content-between mb-5 d-none" id="cgst">
                                 <div class="col-md-4 mt-3">
-                                    <h6 style="color: #ccc;">CGST :</h5><br>
+                                    <h6 style="color: #ccc;">CGST</h5><br>
                                 </div>
                                 <div class="col-md-8 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.cgst|floatformat:2 }} INR" class="amnt"
@@ -746,7 +770,7 @@
                             </div>
                             <div class=" justify-content-between mb-5  d-none" id="sgst">
                                 <div class="col-md-4 mt-3">
-                                    <h6 style="color: #ccc;">SGST :</h5><br>
+                                    <h6 style="color: #ccc;">SGST</h5><br>
                                 </div>
                                 <div class="col-md-8 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.sgst|floatformat:2 }} INR" class="amnt"
@@ -755,7 +779,7 @@
                             </div>
                             <div class="d-flex justify-content-between mb-5">
                                 <div class="col-md-8 mt-3">
-                                    <h6 style="color: #ccc;">Shipping Charge :</h5><br>
+                                    <h6 style="color: #ccc;">Shipping Charge</h5><br>
                                 </div>
                                 <div class="col-md-4 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.shipping_charge }} INR" class="amnt"
@@ -765,7 +789,7 @@
 
                             <div class="d-flex justify-content-between mb-5">
                                 <div class="col-md-6 mt-3">
-                                    <h6 style="color: #ccc;">Adjustment :</h5><br>
+                                    <h6 style="color: #ccc;">Adjustment</h5><br>
                                 </div>
                                 <div class="col-md-6 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.adjustment|floatformat:2 }} INR"
@@ -775,7 +799,7 @@
 
                             <div class="d-flex justify-content-between mb-5">
                                 <div class="col-md-6 mt-3">
-                                    <h6 style="color: #ccc;">Grand Total :</h5><br>
+                                    <h6 style="color: #ccc;">Grand Total</h5><br>
                                 </div>
                                 <div class="col-md-6 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.grand_total|floatformat:2 }} INR"
@@ -785,7 +809,7 @@
 
                             <div class="d-flex justify-content-between mb-5">
                                 <div class="col-md-6 mt-3">
-                                    <h6 style="color: #ccc;">Amount Paid :</h5><br>
+                                    <h6 style="color: #ccc;">Amount Paid</h5><br>
                                 </div>
                                 <div class="col-md-6 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.amt_paid|floatformat:2 }} INR"
@@ -795,7 +819,7 @@
 
                             <div class="d-flex justify-content-between mb-5">
                                 <div class="col-md-6 mt-3">
-                                    <h6 style="color: #ccc;">Balance :</h5><br>
+                                    <h6 style="color: #ccc;">Balance</h5><br>
                                 </div>
                                 <div class="col-md-6 mt-3 mx-3">
                                     <input type="text" value="{{ recur_bill.balance|floatformat:2 }} INR"
@@ -1141,6 +1165,32 @@ $(document).ready(function () {
 
 </script>
 
- 
+<script type="text/javascript">
+    $(document).ready(function ($) {
+        console.log('print');
+
+        $(document).on('click', '.btn_print', function (event) {
+            console.log('print1');
+            event.preventDefault();
+            var element = document.getElementById('whatToPrint');
+            var opt =
+            {
+                margin: 1,
+                filename: 'recurring_bill_' + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+
+        });
+
+    });
+
+    
+</script>
+
+
+
 
 {% endblock %}

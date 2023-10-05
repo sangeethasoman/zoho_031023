@@ -150,7 +150,7 @@
         </div>
       </div>
 
-      <div class="row mt-5 mb-5">
+      <!-- <div class="row mt-5 mb-5">
         <div class="col-md-3">
           <label style="color: rgb(190, 88, 88);">Source of Supply*</label>
         </div>
@@ -200,7 +200,7 @@
             </select>
             
         </div>
-      </div>
+      </div> -->
       
       
 
@@ -344,6 +344,15 @@
           <input type="text" class="form-control text-dark bg-light"  id="cemail_inp" name="cemail_inp">
         </div>
       </div>
+      <div class="row mt-2" id="c_sou_supply_row">
+        <div class="col-md-3">
+          <label for="srcofsupply">Source Of Supply</label>
+        </div>
+        <div class="col-md-6">
+          <input type="text" class="form-control text-dark bg-light"  id="srcofsupply" name="srcofsupply"  >
+        </div>
+      </div>
+
 
       <div class="row mt-2" id="cgst_trt_row">
         <div class="col-md-3">
@@ -2465,8 +2474,9 @@ $(document).ready(function() {
               // $("#cgst_trt_row").removeClass('d-none');
               // $("#cgst_trt_row").addClass('d-flex');
               $('#cemail_inp').val(' '+ data.customer_email);
+              $('#srcofsupply').val(' '+ data.cust_place_supply);
               $('#cgst_trt_inp').val(' ' +data.gst_treatment);
-
+              //srcofsupply();
               if( data.gst_treatment == 'Registered Business-Regular Business that is registered under GST'){
                 // $("#cgstin_row").removeClass('d-none');
                 // $("#cgstin_row").addClass('d-flex');
@@ -2498,6 +2508,42 @@ $(document).ready(function() {
 
 });
 
+function srcofsupply(){ debugger
+  $(".selecttax").removeClass('d-none');
+  $(".selecttax").addClass('d-flex');
+  var st = $("#srcofsupply").val().split(" ").slice(1).join(" ").trim();
+  console.log(st)
+  if( st == $("#company_state").val())
+  {
+    $(".tax2").removeClass('d-flex');
+    $(".tax2").addClass('d-none');
+    $(".tax1").removeClass('d-flex');
+    $(".tax1").addClass('d-none');
+
+    $("#cgst1").removeClass('d-none');
+    $("#cgst1").addClass('d-flex');
+    $("#sgst1").removeClass('d-none');
+    $("#sgst1").addClass('d-flex');
+
+    $("#igst1").removeClass('d-flex');
+    $("#igst1").addClass('d-none');
+
+  }
+  else{
+    $(".tax1").removeClass('d-flex');
+    $(".tax1").addClass('d-none');
+    $(".tax2").removeClass('d-flex');
+    $(".tax2").addClass('d-none');
+
+    $("#igst1").removeClass('d-none');
+    $("#igst1").addClass('d-flex');
+
+    $("#cgst1").removeClass('d-flex');
+    $("#cgst1").addClass('d-none');
+    $("#sgst1").removeClass('d-flex');
+    $("#sgst1").addClass('d-none');
+  }
+  }
 
 $(document).ready(function() {
     $('#customer').change(function() {
@@ -2526,6 +2572,8 @@ $(document).ready(function() {
               // $("#cgst_trt_row").addClass('d-flex');
               $('#cemail_inp').val(' '+ data.customer_email);
               $('#cgst_trt_inp').val(' ' +data.gst_treatment);
+              $('#srcofsupply').val(' '+ data.cust_place_supply); 
+              srcofsupply();
 
               if( data.gst_treatment == 'Registered Business-Regular Business that is registered under GST'){
                 // $("#cgstin_row").removeClass('d-none');
@@ -4217,7 +4265,7 @@ if(parseFloat(paid) > parseFloat(grand_total)){
 }
 else{
   var frm = document.getElementById("forms");
-  frm.action = ("{% url 'create_recurring_bills' %}")
+  frm.action = ("{% url 'change_recurring_bills' id=id %}")
 }
   
 }

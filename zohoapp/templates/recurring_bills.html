@@ -287,7 +287,7 @@ $('.dropdown-toggle').dropdown();
     function TableDataBind(jsonObj){ 
 
     $("#recTable").empty();
-         $.each(jsonObj, function (index, data) { debugger
+         $.each(jsonObj, function (index, data) { 
             var newRow = $("<tr>");
             newRow.append("<td><a href='/view_recurring_bills/" + data.id + "'>"+data.start_date+"</a></td>");
             newRow.append("<td><a href='/view_recurring_bills/" + data.id + "'>"+data.bill_no+"</a></td>");
