@@ -233,12 +233,28 @@
 
                 </div>
             </div>
-            <div class="row mb-4" >
-              <div class="col-sm-2"><label for="vendor_sos">GST Number</div>
-              <div class="col-sm-10"><input type="text" id="gst_no" name="gst_no" class="form-control bg-white text-dark"
+            <!-- <div class="row mb-4" >
+              <div class="col-sm-2"><label for="v_gsttype">GST Treatment</div>
+              <div class="col-sm-10"><input type="text" id="v_gsttype" name="v_gsttype" class="form-control bg-white text-dark"
                       style="width: 50%;">
 
               </div>
+          </div> -->
+          <div class="row mt-2 d-none" id="gst_trt_row">
+            <div class="col-md-3">
+              <label for="gst_trt_inp">GST Treatment</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control text-dark bg-light" id="v_gsttype" name="v_gsttype">
+            </div>
+          </div>
+          <div class="row mt-2 mb-2 d-none" id="gstin_row">
+            <div class="col-md-3">
+              <label for="gstin_inp">GST Number</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control text-dark bg-light"  id="gstin_inp" name="gstin_inp">
+            </div>
           </div>
             <div class="row mb-4" style="display: none;">
                 <div class="col-sm-2"><label for="vendor_sos">Source Of Supply</label></div>
@@ -255,6 +271,33 @@
 
                 </div>
             </div>
+            <div class="row mt-2">
+              <!-- <div class="col-md-3">
+                <label for="" style="color: rgb(190, 88, 88);">Repeat Every *</label>
+              </div>
+      
+              <div class="col-md-3">
+                <div class="d-flex">
+                  <select class="form-control bg-white text-dark" id="repeats"  name="repeats"> </select>
+                 
+                  
+                </div>   
+              </div> -->
+              <div class="row mb-4">
+                <div class="col-sm-2"><label for="repeats">Repeat Every *</label></div>
+                <div class="col-sm-4"><select class="form-control bg-white text-dark" id="repeats"  name="repeats"  class="form-control bg-white text-dark"> </select></div>
+                <div class="col-sm-2">
+                
+                  <a data-toggle="modal" data-target="#newrepeat">
+                    <i class="fas fa-plus p-2 rounded " style="color: white; background-color: rgb(210, 132, 30); "
+                        data-toggle="tooltip" title="Add Repeat"></i>
+                </a>
+              </div>
+            </div>
+             
+              
+            </div>
+            
             <div class="row mb-4">
                 <div class="col-sm-2"><label for="reference">Order Number</label></div>
                 <div class="col-sm-4"> <input type="number" id="order_number" name="order_number"
@@ -271,17 +314,19 @@
                         class="form-control bg-white text-dark">
                 </div>
                 <div class="col-sm-2 "><label class="text-right">Payment Terms</label></div>
-                <div class="col-sm-4 d-flex align-items-center"> <select id="p_terms" name="p_terms"
+                <div class="col-sm-4 d-flex align-items-center"> 
+                    <select id="p_terms" name="p_terms"
                         class="form-control bg-white text-dark">
+                        
+                        <option id="crt_term" selected></option>
+                       
+                        <option value="30">Net 30</option>
+                        
+                        <option value="30">Net 60</option>
+                        <option value="0">Due On Receipt</option>
                         {% for t in terms %}
                         <option value="{{t.Days}}">{{t.Terms}}</option>
                         {% endfor%}
-                        <option id="crt_term" selected></option>
-                        <option value="15">Net 15</option>
-                        <option value="30">Net 30</option>
-                        <option value="15">Net 45</option>
-                        <option value="30">Net 60</option>
-                        <option value="0">Due On Receipt</option>
                     </select>
                     <button type="button" class="btn p-2" data-toggle="modal" data-target="#newpayment">
                         <i class="fas fa-plus p-2 rounded" style="color: white; background-color: rgb(210, 132, 30); "
@@ -315,14 +360,80 @@
 
               </div>
           </div>
-          <div class="row mb-4   ">
+          <div class="row mt-2 d-none" id="cgst_trt_row">
+            <div class="col-md-3">
+              <label for="c_gsttype">GST Treatment</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control text-dark bg-light" id="c_gsttype" name="c_gsttype"  >
+            </div>
+          </div>
+    
+          <div class="row mt-2 mb-2 d-none" id="cgstin_row">
+            <div class="col-md-3">
+              <label for="gstin_inp">GST Number</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control text-dark bg-light"  id="cgstin_inp" name="cgstin_inp" >
+            </div>
+          </div>
+          <div class="row mb-4">
               <div class="col-sm-2"><label for="customer_pos">Place Of Supply</label></div>
               <div class="col-sm-10"><input type="text" id="pos" name="pos" class="form-control bg-white text-dark"
                       style="width: 50%;">
 
               </div>
           </div>
-            <div class="form-check  pt-2 pb-5">
+          <div class="row mb-4">
+            <div class="col-sm-2"><label for="paymentmethod">Payment Method</label></div>
+            <div class="col-sm-10"><select name="paymentmethod" id="paymentmethod" class="form-control bg-white text-dark" style="width: 50%;">
+              <option id="crt_paymt_method" selected></option>
+              <option value="Cash">Cash</option>
+              <option value="Cheque">Cheque</option>
+              <optgroup label="BankName">Bank Name</optgroup>
+              <option value="not applicable">Not applicable</option> 
+              <option value="ALLAHABAD BANK">ALLAHABAD BANK </option>
+              <option value="ANDHRA BANK">ANDHRA BANK</option>
+              <option value="AXIS BANK">AXIS BANK</option>
+              <option value="STATE BANK OF INDIA">STATE BANK OF INDIA</option>
+              <option value="BANK OF BARODA">BANK OF BARODA</option>
+              <option value="UCO BANK">UCO BANK</option>
+              <option value="UNION BANK OF INDIA">UNION BANK OF INDIA</option>
+              <option value="BANK OF INDIA">BANK OF INDIA</option>
+              <option value="BANDHAN BANK LIMITED">BANDHAN BANK LIMITED</option>
+              <option value="CANARA BANK">CANARA BANK</option>
+              <option value="GRAMIN VIKASH BANK">GRAMIN VIKASH BANK</option>
+              <option value="CORPORATION BANK">CORPORATION BANK</option>
+              <option value="INDIAN BANK">INDIAN BANK</option>
+              <option value="INDIAN OVERSEAS BANK">INDIAN OVERSEAS BANK</option>
+              <option value="ORIENTAL BANK OF COMMERCE">ORIENTAL BANK OF COMMERCE</option>
+              <option value="PUNJAB AND SIND BANK">PUNJAB AND SIND BANK</option>
+              <option value="PUNJAB NATIONAL BANK">PUNJAB NATIONAL BANK</option>
+              <option value="RESERVE BANK OF INDIA">RESERVE BANK OF INDIA</option>
+              <option value="UNITED BANK OF INDIA">UNITED BANK OF INDIA</option>
+              <option value="CENTRAL BANK OF INDIA">CENTRAL BANK OF INDIA</option>
+              <option value="VIJAYA BANK">VIJAYA BANK</option>
+              <option value="DENA BANK">DENA BANK</option>
+              <option value="BHARATIYA MAHILA BANK LIMITED">BHARATIYA MAHILA BANK LIMITED</option>
+              <option value="FEDERAL BANK LTD">FEDERAL BANK LTD </option>
+              <option value="HDFC BANK LTD">HDFC BANK LTD</option>
+              <option value="ICICI BANK LTD">ICICI BANK LTD</option>
+              <option value="IDBI BANK LTD">IDBI BANK LTD</option>
+              <option value="PAYTM BANK">PAYTM BANK</option>
+              <option value="FINO PAYMENT BANK">FINO PAYMENT BANK</option>
+              <option value="INDUSIND BANK LTD">INDUSIND BANK LTD</option>
+              <option value="KARNATAKA BANK LTD">KARNATAKA BANK LTD</option>
+              <option value="KOTAK MAHINDRA BANK">KOTAK MAHINDRA BANK</option>
+              <option value="YES BANK LTD">YES BANK LTD</option>
+              <option value="SYNDICATE BANK">SYNDICATE BANK</option>
+              <option value="BANK OF INDIA">BANK OF INDIA</option>
+              <option value="BANK OF MAHARASHTRA">BANK OF MAHARASHTRA</option>
+             
+          </select>
+
+            </div>
+        </div>
+          <div class="form-check  pt-2 pb-5">
                 <input class="form-check-input" type="checkbox" value="" id="checkbox" onchange="updateTaxHeader()">
                 <label class="form-check-label" for="checkbox">
                     This transaction is applicable for reverse charge
@@ -335,6 +446,7 @@
                     <tr>
                         <th style="width: 200px;">Item Details <a href="" data-toggle="modal" data-target="#create_item" style="text-decoration: none;">
                           <i class="fas fa-plus p-2 rounded"style="color: white; background-color: rgb(210, 132, 30);"></i></a></th>
+                          <th class="text-center text-uppercase">HSN </th>
 
                         <th style="width: 250px;">Account<a href="" data-toggle="modal" data-target="#create_account" style="text-decoration: none;">
                           <i class="fas fa-plus p-2 rounded"style="color: white; background-color: rgb(210, 132, 30);"></i></a></th>
@@ -342,6 +454,7 @@
                         <th class="text-right" >Quantity</th>
                         <th class="text-right" >Rate</th>
                         <th class="text-right" id="tax_head" style="width: 200px;">Tax</th>
+                        <th class="text-center">Discount</th>
                         <th class="text-right" style="width: 200px;">Amount</th>
                     </tr>
                 </thead>
@@ -358,6 +471,9 @@
                                     <option class="text-dark" value="{{i.Name}}">{{i.Name}}</option>
                                     {% endfor %}
                                 </select></div>
+                        </td>
+                        <td  style="width: 50%;">
+                          <input type="text" value="0" name='HSN0' id="HSN0" placeholder='HSN' class='form-control bg-transparent text-black border-0 item_select itm' />
                         </td>
                         <td>
                             <div class='form-group'>
@@ -563,7 +679,7 @@
                         <td class='text-right'><input type='number' id='rate1'  style="width: 100px;"
                                 class='bg-transparent border-0 text-black text-right rate' name='rate[]' value='0.00'>
                         </td>
-
+                        
                         <td class='text-right' > 
                           <select name='tax[]' id='tax1' class='form-control bg-transparent text-black  border-0 tax'
                           onclick='handleTaxChange(1)'>
@@ -586,7 +702,9 @@
                         </select>
                             
                         </td>
-                           
+                        <td class='text-right'> 
+                          <input type="number" id="discount" name="discount_amnt"  style="width: 60px;"  value='0.00' class='bg-transparent border-0 text-black text-right discount' step="0.00" min="0"/>
+                        </td> 
                         <td style="display: none;">
                             <input type="number" name='taxamount[]' id="taxamount1" class="form-control taxamount" />
                         </td>
@@ -608,6 +726,7 @@
             </table>
             <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30) ;"
                 id="add-row">Add another line</button>
+            
 
             <div class="row  pb-5">
                 <div class="col-sm-6 d-flex flex-column mt-auto">
@@ -656,9 +775,10 @@
                             </td> -->
                         </tr>
                         <tr>
-                            <td>Discount</td>
+                            <td>Adjustment</td>
                             <td></td>
-                            <td><input type="number" id="discount" name="discount_amnt" value="0" > <i class="fas fa-question"></i></td>
+                            <td><input type="number" id="adjustment" name="adjustment_amnt" value="0" > <i class="fas fa-question"></i></td>
+                            <!-- <td><input type="number" id="discount" name="discount_amnt" value="0" > <i class="fas fa-question"></i></td> -->
                             <!-- <td><input type="text" id="discount_amnt" name="discount_amnt" step="any" 
                                     class="form-control bg-transparent border-0 text-right discount_amnt text-dark">
                             </td> -->
@@ -668,10 +788,18 @@
                             <th></th>
                             <th><input type="number" id="total" name="total" step="any" value="0.00"
                                     class="form-control bg-transparent border-0 text-right total text-dark"></th>
+                           
+                        </tr>
+                        <tr>
+                          <td><strong>Paid ( &#x20B9; )</strong></td>
+                          <th></th>
+                          <th><input type="number" id="amtPaid" name="amtPaid" step="any" value="0.00"
+                                  class="form-control bg-transparent border-0 text-right total text-dark"></th>
                         </tr>
                     </table>
                 </div>
             </div>
+            
 
             <div class="row py-2 ">
 
@@ -706,6 +834,67 @@
 
 
 </section>
+
+<!-- repeat modal -->
+
+
+<div class="modal fade" id="newrepeat">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
+      <div class="modal-header " style="background: rgb(32, 35, 37);">
+          <h3 class="m-3 text-uppercase">Add Repeat</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body" style="background: rgb(32, 35, 37);">
+        <div class="card p-3 m-3">
+          <form action="" method="post" class="needs-validation" novalidate autocomplete="off" id="modalRepeat">
+            <div class="row mt-2">
+              <div class="col-md-2 mt-2"></div>
+              <div class="col-md-4 mt-2">
+                
+              </div>
+
+            </div>
+
+
+            <div class="row mt-2">
+              <div class="col-md-2 mt-2">
+                <center><label for="termname" style="color: rgb(190, 88, 88);">Add Repeat*</label></center>
+              </div>
+
+              <div class="col-md-4 mt-2">
+                <input type="text" class="form-control text-dark bg-light" id="repeats_input" name="repeats_input" required>      
+              </div>
+
+             
+
+            </div>
+            
+            <div class="row mt-5">
+              <div class="col-md-4"></div>
+              <div class="col-md-4">
+                <div class="d-flex">
+                  <button class="btn save_btn rounded-pill text-grey w-50 my-4 mx-3"
+                  type="submit" data-dismiss="modal" id="RepeatSave">Save
+                  </button> 
+                  
+
+                  <button type="button" class="close btn save_btn rounded-pill text-grey w-50 my-4" 
+                    data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">Cancel</span>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-4"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div> 
 
 <!-- create customer----------------------------------------------------------------------------------------------------------------------------------- -->
 
@@ -992,12 +1181,12 @@
                 <div class="d-flex">
                   <select class="form-control text-dark bg-light" id="c_terms" name="c_terms" required>
                     <option selected id="crt_term"></option>
-                    <option value="15">NET 15</option>
+                    
                     <option value="30">NET 30</option>
-                    <option value="45">NET 45</option>
+                    
                     <option value="60">NET 60</option>
-                    <option value="90">NET 90</option>
-                    <option value="">Due end of the month</option>
+                    
+                    
                     <option value="recpt">Due on receipt</option>
                     {% for p in terms %}
                     <option value="{{p.Terms}} {{p.id}}">{{p.Terms}}</option>
@@ -1526,12 +1715,12 @@
               <div class="col-md-6 mt-2">
                 <div class="d-flex">
                   <select class="form-control text-dark bg-light" id="v_terms" name="v_terms" required>
-                    <option selected value="15">NET 15</option>
+                    
                     <option value="30">NET 30</option>
-                    <option value="45">NET 45</option>
+                    
                     <option value="60">NET 60</option>
-                    <option value="90">NET 90</option>
-                    <option value="">Due end of the month</option>
+                   
+                    
                     <option value="recpt">Due on receipt</option>
                     {% for p in payments %}
                     <option value="{{p.Terms}} {{p.id}}">{{p.Terms}}</option>

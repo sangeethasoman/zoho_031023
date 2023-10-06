@@ -116,7 +116,9 @@
             <option value="{{v.id}} {{ v.first_name }} {{ v.last_name }}">{{ v.first_name }} {{ v.last_name }}</option>
             {% endfor %}
           </select>
-          <a href="" class="p-2 ml-2" data-toggle="modal" data-target="#newvendor">
+        </div>
+        <div class="col-md-3">
+          <a data-toggle="modal" data-target="#newvendor">
             <i class="fas fa-plus p-2 rounded " style="color: white; background-color: rgb(210, 132, 30); "
                 data-toggle="tooltip" title="Create Vendor"></i>
           </a>
@@ -234,11 +236,14 @@
             <select class="form-control text-dark bg-light" id="repeats"  name="repeats"> 
               <option selected value="{{recur_bills.repeat_every}}">{{recur_bills.repeat_every}}</option>
             </select>
-            <a href="" class="p-2 ml-2" data-toggle="modal" data-target="#newrepeat">
-              <i class="fas fa-plus p-2 rounded " style="color: white; background-color: rgb(210, 132, 30); "
-                  data-toggle="tooltip" title="Add Repeat"></i>
-          </a>
+            
           </div>   
+        </div>
+        <div class="col-md-3">
+          <a data-toggle="modal" data-target="#newrepeat">
+            <i class="fas fa-plus p-2 rounded " style="color: white; background-color: rgb(210, 132, 30); "
+                data-toggle="tooltip" title="Add Repeat"></i>
+        </a>
         </div>
       </div>
       <br><br>
@@ -324,15 +329,18 @@
             <option value="{{c.id}} {{ c.customerName }}">{{ c.customerName }}</option>
             {% endfor %}
           </select>
-          <a href="" class="p-2 ml-2" data-toggle="modal" data-target="#newcustomer">
-            <i class="fas fa-plus p-2 rounded" style="color: white; background-color: rgb(210, 132, 30); "
-                data-toggle="tooltip" title="Create Customer"></i>
-          </a>
+          
         
           <input type="hidden" id="cust_state" value="" readonly >
 
           <input type="hidden" id="company_state" value="{{company.state}}" readonly>
 
+        </div>
+        <div class="col-md-3 mt-2">
+          <a  data-toggle="modal" data-target="#newcustomer">
+            <i class="fas fa-plus p-2 rounded" style="color: white; background-color: rgb(210, 132, 30); "
+                data-toggle="tooltip" title="Create Customer"></i>
+          </a>
         </div>
       </div>
 

@@ -227,6 +227,22 @@
 
                 </div>
             </div>
+            <!-- <div class="row mt-2" id="gst_trt_row">
+              <div class="col-md-3">
+                <label for="gst_trt_inp">GST Treatment</label>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control text-dark bg-light" id="gst_trt_inp" name="gst_trt_inp" >
+              </div>
+            </div> -->
+            <div class="row mb-4" >
+              <div class="col-sm-2"><label for="gst_trt_inp">GST Treatment</div>
+              <div class="col-sm-10"> <input type="text" class="form-control bg-white text-dark"
+                style="width: 50%;" id="gst_trt_inp" name="gst_trt_inp" >
+
+              </div>
+          </div>
+            
             <div class="row mb-4" >
               <div class="col-sm-2"><label for="vendor_sos">GST Number</div>
               <div class="col-sm-10"><input type="text" id="gst_no" name="gst_no" class="form-control bg-white text-dark"
@@ -316,6 +332,35 @@
 
               </div>
           </div>
+          <div class="row mb-4" id="cgst_trt_row">
+            <div class="col-sm-2"> <label for="gst_trt_inp">GST Treatment</label></div>
+            <div class="col-5"><input type="text" class="form-control bg-white text-dark"  id="cgst_trt_inp" name="cgst_trt_inp">
+
+            </div>
+        </div>
+        <div class="row mb-4" id="cgstin_row">
+          <div class="col-sm-2"> <label for="gstin_inp">GST Number</label></div>
+          <div class="col-5"><input type="text" class="form-control text-dark bg-light" id="cgstin_inp" name="cgstin_inp">
+
+          </div>
+      </div>
+          <!-- <div class="row mt-2" id="cgst_trt_row">
+            <div class="col-md-3">
+              <label for="gst_trt_inp">GST Treatment</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control text-dark bg-light"  id="cgst_trt_inp" name="cgst_trt_inp">
+            </div>
+          </div>
+    
+          <div class="row mt-2 mb-2" id="cgstin_row">
+            <div class="col-md-3">
+              <label for="gstin_inp">GST Number</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control text-dark bg-light" id="cgstin_inp" name="cgstin_inp">
+            </div>
+          </div> -->
             <div class="form-check  pt-2 pb-5">
                 <input class="form-check-input" type="checkbox" value="" id="checkbox" onchange="updateTaxHeader()">
                 <label class="form-check-label" for="checkbox">
@@ -329,6 +374,7 @@
                     <tr>
                         <th style="width: 200px;">Item Details <a href="" data-toggle="modal" data-target="#create_item" style="text-decoration: none;">
                           <i class="fas fa-plus p-2 rounded"style="color: white; background-color: rgb(210, 132, 30);"></i></a></th>
+                          <th class="text-right">HSN</th>
 
                         <th style="width: 250px;">Account<a href="" data-toggle="modal" data-target="#create_account" style="text-decoration: none;">
                           <i class="fas fa-plus p-2 rounded"style="color: white; background-color: rgb(210, 132, 30);"></i></a></th>
@@ -336,6 +382,7 @@
                         <th class="text-right">Quantity</th>
                         <th class="text-right">Rate</th>
                         <th class="text-right" id="tax_head" style="width: 200px;">Tax</th>
+                        <th class="text-right">Discount</th>
                         <th class="text-right" style="width: 200px;">Amount</th>
                     </tr>
                 </thead>
@@ -353,6 +400,12 @@
                                     <option class="text-dark" value="{{i.Name}}">{{i.Name}}</option>
                                     {% endfor %}
                                 </select></div>
+                        </td>
+                        <!-- <td  style="width: 50%;">
+                          <input type="text" value="0" name='HSN0' id="HSN0" placeholder='HSN' class='bg-transparent border-0 text-black text-right hsn'/>
+                        </td> -->
+                        <td class='text-right'><input  type="text" value="0" name='HSN0' id="HSN0" placeholder='HSN' style="width: 80px;"
+                          class='bg-transparent border-0 text-black text-right qty'>
                         </td>
                         <td>
                             <div class='form-group'>
@@ -583,6 +636,9 @@
                         <td style="display: none;">
                             <input type="number" name='taxamount[]' id="taxamount{{ forloop.counter }}" class="form-control taxamount" />
                         </td>
+                        <td class='text-right'><input type='number' id='discount{{ forloop.discount }}'
+                          class='bg-transparent border-0 text-black text-right discount' name='discount[]'
+                          value="{{bill.discount}}"></td>
                         <td class='text-right'><input type='number' id='amount{{ forloop.counter }}'
                                 class='bg-transparent border-0 text-black text-right amount' name='amount[]'
                                 value="{{item.amount}}"></td>
@@ -1844,6 +1900,21 @@
                 <input required type="text" class="form-control bg-light text-dark" name="name">
               </div>
             </div>
+
+            <div class="form-group row">
+              <label for="HSN" class="col-sm-2 col-form-label" style="color: rgb(190, 88, 88);">HSN</label>
+              <div class="col-sm-10 col-md-7 col-9" style="margin-left: -2.2rem;">
+                <input type="text" class="form-control bg-light text-dark" id="HSN" name="HSN" required>
+              </div>
+            </div>
+            <!-- <div class="row mt-2">
+              <div class="col-md-3">
+                <label for="name" style="color: rgb(190, 88, 88);">HSN</label>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control text-dark bg-light" id="HSN" name="HSN" required>
+              </div>
+            </div> -->
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Unit <i class="fa fa-question-circle"></i></label>
               <div class="col-sm-10 col-md-7 col-9" style="margin-left: -2.2rem;">

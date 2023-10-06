@@ -1121,6 +1121,7 @@ class PurchaseBills(models.Model):
     status = models.CharField(max_length=100,null=True,blank=True)
     attachment = models.ImageField(upload_to="image/", null=True)  
     comments = models.CharField(max_length=100,null=True,blank=True)
+    customer_gst_no = models.CharField(max_length=100,null=True,blank=True)
     
     
 class PurchaseBillItems(models.Model):
