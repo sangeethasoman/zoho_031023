@@ -15610,7 +15610,7 @@ def update_adjustment(request,id):
          
     return redirect("inventory_adjustment")
 
-#-------------------------------------------------------------------------------------------------#
+#----------------------------Recurring Bills, Sangeetha Soman--------------------------------------#
 @login_required(login_url='login')
 def add_repeat(request):
     
@@ -15673,7 +15673,7 @@ def delete_rec_comments(request,id,commentid):
         return redirect('view_recurring_bills',id)
 
 
-# -------------------Purchase Bill--------------------------------------
+# -------------------Purchase Bill, Sangeetha Soman--------------------------------------
 
     
 def delete_purchase_bill(request,id):

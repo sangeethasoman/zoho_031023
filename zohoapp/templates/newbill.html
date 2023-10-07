@@ -272,20 +272,10 @@
                 </div>
             </div>
             <div class="row mt-2">
-              <!-- <div class="col-md-3">
-                <label for="" style="color: rgb(190, 88, 88);">Repeat Every *</label>
-              </div>
-      
-              <div class="col-md-3">
-                <div class="d-flex">
-                  <select class="form-control bg-white text-dark" id="repeats"  name="repeats"> </select>
-                 
-                  
-                </div>   
-              </div> -->
+              
               <div class="row mb-4">
                 <div class="col-sm-2"><label for="repeats">Repeat Every *</label></div>
-                <div class="col-sm-4"><select class="form-control bg-white text-dark" id="repeats"  name="repeats"  class="form-control bg-white text-dark"> </select></div>
+                <div class="col-sm-4"><select class="form-control bg-white text-dark" id="repeats"  name="repeats"  class="form-control bg-white text-dark" style="width: 105%;"> </select></div>
                 <div class="col-sm-2">
                 
                   <a data-toggle="modal" data-target="#newrepeat">
@@ -313,27 +303,35 @@
                 <div class="col-sm-4"> <input type="date" id="due_date" name="due_date"
                         class="form-control bg-white text-dark">
                 </div>
-                <div class="col-sm-2 "><label class="text-right">Payment Terms</label></div>
-                <div class="col-sm-4 d-flex align-items-center"> 
-                    <select id="p_terms" name="p_terms"
-                        class="form-control bg-white text-dark">
-                        
-                        <option id="crt_term" selected></option>
-                       
-                        <option value="30">Net 30</option>
-                        
-                        <option value="30">Net 60</option>
-                        <option value="0">Due On Receipt</option>
-                        {% for t in terms %}
-                        <option value="{{t.Days}}">{{t.Terms}}</option>
-                        {% endfor%}
-                    </select>
-                    <button type="button" class="btn p-2" data-toggle="modal" data-target="#newpayment">
-                        <i class="fas fa-plus p-2 rounded" style="color: white; background-color: rgb(210, 132, 30); "
-                            data-toggle="tooltip" title="Configure Terms"></i>
-                    </button>
+                <div class="col-md-3">
+                  <input type="checkbox" id="never-expire-checkbox" onchange="toggleDateInput()" />
+                  <label for="never-expire-checkbox" style="color: #909091;" name="neverExp">Never Expires</label>
                 </div>
+                
             </div>
+            <div class="row pt-4">
+              <div class="col-sm-2"><label class="text-right">Payment Terms</label></div>
+              <div class="col-sm-5 d-flex align-items-center"> 
+                  <select id="p_terms" name="p_terms"
+                  class="form-control bg-white text-dark" style="width: 78%;">
+                      
+                      <option id="crt_term" selected></option>
+                     
+                      <option value="30">Net 30</option>
+                      
+                      <option value="30">Net 60</option>
+                      <option value="recpt">Due On Receipt</option>
+                      {% for t in terms %}
+                      <option value="{{t.Days}}">{{t.Terms}}</option>
+                      {% endfor%}
+                  </select>
+                  <button type="button" class="btn p-2" data-toggle="modal" data-target="#newpayment">
+                      <i class="fas fa-plus p-2 rounded" style="color: white; background-color: rgb(210, 132, 30); "
+                          data-toggle="tooltip" title="Configure Terms"></i>
+                  </button>
+              </div>
+            </div>
+            
             <div class="row mb-4  pt-5">
               <div class="col-sm-2"><label for="customer_name">Customer Name*</label></div>
               <div class="col-sm-10 d-flex align-items-center">
@@ -4752,6 +4750,128 @@ $.ajax({
      }
  
  </script>
+
+//-------- add repeat modal-----------
+<script>
+$(document).on("click","#RepeatSave",function(){
+  $.ajax({
+    
+    type : 'POST',
+    url:"{% url 'add_repeat' %}",
+
+
+    data:{
+      repeats : $("#repeats_input").val(),
+       
+        
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+        
+      },
+    
+      success: function(response) {
+        document.getElementById("modalRepeat").reset();
+        reloadRepeat();
+      },
+  });        
+});
+
+$(document).ready(function(){
+  reloadRepeat()
+});
+
+function reloadRepeat() {
+
+$.ajax({
+  url: "{% url 'repeat_dropdown' %}",
+  type: "GET",
+  dataType: "json",
+  data: $(this).serialize(),
+  csrfmiddlewaretoken: '{{ csrf_token }}',
+
+  success: function(data) {
+    var dropdown = $('#repeats');
+    dropdown.empty();
+    dropdown.append(`
+               <option selected value="Week">Week</option>
+               
+               <option value="Month">Month</option>
+               
+               <option value="Year">Year</option>`); 
+    $.each(data, function(key, value) { 
+        dropdown.append('<option value="'+value[0]+'">'+value[0]+'</option>'); 
+    });
+  },
+  error: function(xhr, status, error) {
+  console.error(xhr.responseText);
+  }
+});
+}
+</script>
+
+<!-- --------payment terms modal---------- -->
+<script>
+$(document).on("click","#paySave",function(){
+  $.ajax({
+    
+    type : 'POST',
+    url:"{% url 'recurbills_pay' %}",
+
+    data:{
+        name : $("#term_name").val(),
+        days : $("#term_days").val(),
+        
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+        
+      },
+    
+      success: function(response) {
+        document.getElementById("modalPayment").reset();
+        reloadPayment();
+      },
+  });        
+});
+
+function reloadPayment() {
+
+  $.ajax({
+    url: "{% url 'pay_dropdown' %}",
+    type: "GET",
+    dataType: "json",
+    data: $(this).serialize(),
+    csrfmiddlewaretoken: '{{ csrf_token }}',
+
+    success: function(data) {
+      var dropdown = $('#terms');
+      dropdown.empty();
+      dropdown.append(`<option value="30">NET 30</option></option>
+                          
+                          
+                          <option value="60">NET 60</option>
+                          
+                         
+                          <option value="recpt">Due on receipt</option>`);
+      var drpv = $('#v_terms');
+      drpv.empty();
+      drpv.append(`<option value="30">NET 30</option>
+                        
+                        
+                        <option value="60">NET 60</option>
+                       
+                        
+                        <option value="recpt">Due on receipt</option>`);
+      $.each(data, function(key, value) { 
+          dropdown.append($('<option></option>').attr('value', key).text(value[0]).val(value[1]));
+          drpv.append($('<option></option>').attr('value', key).text(value).val(value));
+      });
+    },
+    error: function(xhr, status, error) {
+    console.error(xhr.responseText);
+    }
+  });
+}
+
+</script>
+
 
 
 {% endblock %}
