@@ -238,7 +238,7 @@
             <div class="row mb-4" >
               <div class="col-sm-2"><label for="gst_trt_inp">GST Treatment</div>
               <div class="col-sm-10"> <input type="text" class="form-control bg-white text-dark"
-                style="width: 50%;" id="gst_trt_inp" name="gst_trt_inp" >
+                style="width: 50%;" id="gst_trt_inp" name="gst_trt_inp" value="{{bill.vendor_email}}">
 
               </div>
           </div>
@@ -4628,5 +4628,62 @@ $.ajax({
 
 </script>
 
+<!-- //-------- add repeat modal----------- -->
+<script>
+  $(document).on("click","#RepeatSave",function(){
+    $.ajax({
+      
+      type : 'POST',
+      url:"{% url 'add_repeat' %}",
+  
+  
+      data:{
+        repeats : $("#repeats_input").val(),
+         
+          
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+          
+        },
+      
+        success: function(response) {
+          document.getElementById("modalRepeat").reset();
+          reloadRepeat();
+        },
+    });        
+  });
+  
+  $(document).ready(function(){
+    reloadRepeat()
+  });
+  
+  function reloadRepeat() {
+  
+  $.ajax({
+    url: "{% url 'repeat_dropdown' %}",
+    type: "GET",
+    dataType: "json",
+    data: $(this).serialize(),
+    csrfmiddlewaretoken: '{{ csrf_token }}',
+  
+    success: function(data) {
+      var dropdown = $('#repeats');
+      dropdown.empty();
+      dropdown.append(`
+                 <option selected value="Week">Week</option>
+                 
+                 <option value="Month">Month</option>
+                 
+                 <option value="Year">Year</option>`); 
+      $.each(data, function(key, value) { 
+          dropdown.append('<option value="'+value[0]+'">'+value[0]+'</option>'); 
+      });
+    },
+    error: function(xhr, status, error) {
+    console.error(xhr.responseText);
+    }
+  });
+  }
+  </script>
+  
 
 {% endblock %}

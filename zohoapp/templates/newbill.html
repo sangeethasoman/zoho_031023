@@ -162,36 +162,6 @@
 </script>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script>
-
-    function cancelDialog() {
-
-        var frm = document.getElementById("forms");
-        let customMsg = "Do you want to cancel?";
-
-        if (confirm(customMsg)) {
-            alert("Bill cancelled!")
-        }
-    }
-
-    function saveAsDraftDialog() {
-
-        var frm = document.getElementById("forms");
-        frm.action = ("{% url 'create_purchase_bill' %}")
-    }
-
-    function saveAndOpenDialog() {
-
-        var frm = document.getElementById("forms");
-        frm.action = ("{% url 'create_purchase_bill1' %}")
-    }
-    $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-
-
-
-</script>
 
 
 <section>
@@ -241,22 +211,22 @@
               </div>
           </div> -->
           <div class="row mt-2 d-none" id="gst_trt_row">
-            <div class="col-md-3">
+            <div class="col-sm-2">
               <label for="gst_trt_inp">GST Treatment</label>
             </div>
-            <div class="col-md-6">
-              <input type="text" class="form-control text-dark bg-light" id="v_gsttype" name="v_gsttype">
+            <div class="col-sm-10">
+              <input type="text" class="form-control text-dark bg-light" id="v_gsttype" name="v_gsttype" style="width: 50%;">
             </div>
           </div>
-          <div class="row mt-2 mb-2 d-none" id="gstin_row">
-            <div class="col-md-3">
+          <div class="row mt-2 mb-2 d-none pt-2" id="gstin_row">
+            <div class="col-sm-2">
               <label for="gstin_inp">GST Number</label>
             </div>
-            <div class="col-md-6">
-              <input type="text" class="form-control text-dark bg-light"  id="gstin_inp" name="gstin_inp">
+            <div class="col-sm-10">
+              <input type="text" class="form-control text-dark bg-light"  id="gstin_inp" name="gstin_inp"  style="width: 50%;">
             </div>
           </div>
-            <div class="row mb-4" style="display: none;">
+            <div class="row mb-4 d-none pt-2" id="sos_row">
                 <div class="col-sm-2"><label for="vendor_sos">Source Of Supply</label></div>
                 <div class="col-sm-10"><input type="text" id="sos" name="sos" class="form-control bg-white text-dark"
                         style="width: 50%;">
@@ -359,30 +329,30 @@
               </div>
           </div>
           <div class="row mt-2 d-none" id="cgst_trt_row">
-            <div class="col-md-3">
+            <div class="col-sm-2">
               <label for="c_gsttype">GST Treatment</label>
             </div>
-            <div class="col-md-6">
-              <input type="text" class="form-control text-dark bg-light" id="c_gsttype" name="c_gsttype"  >
+            <div class="col-sm-10">
+              <input type="text" class="form-control text-dark bg-light" id="c_gsttype" name="c_gsttype" style="width: 50%;"  >
             </div>
           </div>
     
-          <div class="row mt-2 mb-2 d-none" id="cgstin_row">
-            <div class="col-md-3">
+          <div class="row mt-2 mb-2 pt-2 d-none" id="cgstin_row">
+            <div class="col-sm-2">
               <label for="gstin_inp">GST Number</label>
             </div>
-            <div class="col-md-6">
-              <input type="text" class="form-control text-dark bg-light"  id="cgstin_inp" name="cgstin_inp" >
+            <div class="col-sm-10">
+              <input type="text" class="form-control text-dark bg-light"  id="cgstin_inp" name="cgstin_inp"style="width: 50%;" >
             </div>
           </div>
-          <div class="row mb-4">
+          <div class="row mb-4 pt-2">
               <div class="col-sm-2"><label for="customer_pos">Place Of Supply</label></div>
               <div class="col-sm-10"><input type="text" id="pos" name="pos" class="form-control bg-white text-dark"
                       style="width: 50%;">
 
               </div>
           </div>
-          <div class="row mb-4">
+          <div class="row mb-4 pt-2">
             <div class="col-sm-2"><label for="paymentmethod">Payment Method</label></div>
             <div class="col-sm-10"><select name="paymentmethod" id="paymentmethod" class="form-control bg-white text-dark" style="width: 50%;">
               <option id="crt_paymt_method" selected></option>
@@ -679,7 +649,7 @@
                         </td>
                         
                         <td class='text-right' > 
-                          <select name='tax[]' id='tax1' class='form-control bg-transparent text-black  border-0 tax'
+                          <select name='tax[]' id='tax1' class='bg-transparent border-0 text-black text-right tax'
                           onclick='handleTaxChange(1)'>
                             <optgroup label="GST" >
                                 <option value=0>0% GST</option>
@@ -791,8 +761,7 @@
                         <tr>
                           <td><strong>Paid ( &#x20B9; )</strong></td>
                           <th></th>
-                          <th><input type="number" id="amtPaid" name="amtPaid" step="any" value="0.00"
-                                  class="form-control bg-transparent border-0 text-right total text-dark"></th>
+                          <th><input type="number" id="amtPaid" name="amtPaid" step="any" value="0.00"></th>
                         </tr>
                     </table>
                 </div>
@@ -1999,9 +1968,9 @@
 </div>  
 
 <!-- Create Item  ------------------------------------------------------------------------------------------------------------------------------>
-<div class="modal fade" id="create_item">
+<div class="modal fade" id="create_item" style="overflow: auto;">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-      <div class="modal-content modal-xl  p-5" style="background-color: #000000;height: 700px; overflow-y: scroll;">
+      <div class="modal-content modal-xl  p-5" style="background-color: #000000;height: 700px; overflow-y: scroll;overflow: auto;">
         <div class="modal-header">
           <h3 class="mb-3  text-white  " style="font-size: 2rem;">New item</h3>
           <button type="button" class="close text-light" data-dismiss="modal" aria-label=""
@@ -2036,6 +2005,12 @@
               <label class="col-sm-2 col-form-label">Name *</label>
               <div class="col-sm-10 col-md-7 col-9" style="margin-left: -2.2rem;">
                 <input required type="text" class="form-control bg-light text-dark" name="name">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">HSN</label>
+              <div class="col-sm-10 col-md-7 col-9" style="margin-left: -2.2rem;">
+                <input required type="text" class="form-control bg-light text-dark" id="HSN" name="HSN" >
               </div>
             </div>
             <div class="form-group row">
@@ -2454,7 +2429,7 @@
 <!-- Get customer data -->
 <script>
     $(document).ready(function () {
-        $('#customer_sel').on('change', function () {
+        $('#customer_sel').on('change', function () { debugger
             select = $('#customer_sel').val();
             // console.log(select);
             $.ajax({
@@ -2463,12 +2438,23 @@
                 data: {
                     id: select
                 },
-                success: function (response) {
+                success: function (response) { debugger
                     // console.log(response)
                     email = response.email
                     pos = response.pos
+                    gst_treatment = response.gst_treatment
+                    gst_number = response.gst_number
+
+                    $("#cgst_trt_row").removeClass('d-none');
+                    $("#cgst_trt_row").addClass('d-flex');
+
+                    $("#cgstin_row").removeClass('d-none');
+                    $("#cgstin_row").addClass('d-flex');
+
                     document.getElementById('customer_email').value = email
                     document.getElementById('pos').value = pos
+                    document.getElementById('c_gsttype').value = gst_treatment
+                    document.getElementById('cgstin_inp').value = gst_number
 
                 }
 
@@ -2491,15 +2477,24 @@
                 data: {
                     id: select
                 },
-                success: function (response) {
+                success: function (response) { debugger
                     email = response.email
-                    sos = response.sos
-                    gst_no = response.gst_no
-                    // console.log(email);
-                    // console.log(sos);
+                    sos = response.sos 
+                    gst_treatment = response.gst_treatment
+                    gst_number = response.gst_number
+ 
+                    $("#gst_trt_row").removeClass('d-none');
+                    $("#gst_trt_row").addClass('d-flex');
+                    $("#gstin_row").removeClass('d-none');
+                    $("#gstin_row").addClass('d-flex');
+                    $("#sos_row").removeClass('d-none');
+                    $("#sos_row").addClass('d-flex');
+
+
                     document.getElementById('vendor_email').value = email
                     document.getElementById('sos').value = sos
-                    document.getElementById('gst_no').value = gst_no
+                    document.getElementById('gstin_inp').value = gst_number
+                    document.getElementById('v_gsttype').value = gst_treatment
 
                 }
 
@@ -3815,6 +3810,7 @@ $.ajax({
       var cost_price = document.getElementsByName('cost_price')[0].value
       var cost_acc = document.getElementsByName('cost_acc')[0].value
       var cost_desc = document.getElementsByName('cost_desc')[0].value
+      var hsn = document.getElementsByName('HSN')[0].value
   
       $.ajax({
   
@@ -3834,6 +3830,7 @@ $.ajax({
           cost_prices: cost_price,
           cost_accs: cost_acc,
           p_descs: cost_desc,
+          hsn: hsn,
         },
   
         success: function (response) {
@@ -3994,6 +3991,7 @@ $.ajax({
                     rate = response.rate
 
                     document.getElementById('rate1').value = rate
+                    document.getElementById('HSN0').value = response.hsn
                     // document.getElementById('crt_acc1').value = newAcc
 
                     var pos = document.getElementById("pos").value;
@@ -4751,7 +4749,7 @@ $.ajax({
  
  </script>
 
-//-------- add repeat modal-----------
+<!-- //-------- add repeat modal----------- -->
 <script>
 $(document).on("click","#RepeatSave",function(){
   $.ajax({
@@ -4870,6 +4868,58 @@ function reloadPayment() {
   });
 }
 
+function toggleDateInput() {
+      var checkbox = document.getElementById("never-expire-checkbox");
+      var dateInput = document.getElementById("due_date");
+      
+      if (checkbox.checked) {
+          dateInput.disabled = true;
+         
+          $("#p_terms").val("recpt");
+      } 
+      else {
+          dateInput.disabled = false;
+      }
+  }
+
+</script>
+<script>
+
+  function cancelDialog() {
+
+      var frm = document.getElementById("forms");
+      let customMsg = "Do you want to cancel?";
+
+      if (confirm(customMsg)) {
+          alert("Recurring Bill cancelled!")
+      }
+  }
+
+  function saveAsDraftDialog() { 
+    let grand_total = $('#total').val();
+    let paid = $('#amtPaid').val(); 
+    if(parseFloat(paid) > parseFloat(grand_total)){
+       alert("Paid amount should not be greater than grand total.")
+    }
+    else{
+      var frm = document.getElementById("forms");
+      frm.action = ("{% url 'create_purchase_bill' %}")
+    }
+  }
+
+  function saveAndOpenDialog() {
+
+    let grand_total = $('#total').val();
+    let paid = $('#amtPaid').val(); 
+    if(parseFloat(paid) > parseFloat(grand_total)){
+       alert("Paid amount should not be greater than grand total.")
+    }
+    else{
+      var frm = document.getElementById("forms");
+      frm.action = ("{% url 'create_purchase_bill1' %}")
+    }
+      
+  }
 </script>
 
 

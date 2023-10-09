@@ -168,8 +168,8 @@ a{
             newRow.append("<td><a href='/bill_view/" + data.id + "'>"+data.customer_name+"</a></td>");
             newRow.append("<td><a href='/bill_view/" + data.id + "'>"+data.vendor_name+"</a></td>");
             newRow.append("<td><a href='/bill_view/" + data.id + "'>"+data.status+"</a></td>");
-            newRow.append("<td><a href='/bill_view/" + data.id + "'>"+data.total+"</a></td>");
-            newRow.append("<td></td>");
+            newRow.append("<td><a href='/bill_view/" + data.id + "'>"+parseFloat(data.total == "None"?0:data.total).toFixed(2)+"</a></td>");
+            newRow.append("<td><a href='/bill_view/" + data.id + "'>"+parseFloat(data.balance== "None"?0:data.balance).toFixed(2)+"</a></td>");
             newRow.append(`<td><a href='/delete_purchase_bill/${data.id}'><i class='fas fa-trash text-danger text-center'></i></a></td>`);
 
             $("#myTable").append(newRow);

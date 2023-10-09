@@ -1121,7 +1121,10 @@ class PurchaseBills(models.Model):
     status = models.CharField(max_length=100,null=True,blank=True)
     attachment = models.ImageField(upload_to="image/", null=True)  
     comments = models.CharField(max_length=100,null=True,blank=True)
-    customer_gst_no = models.CharField(max_length=100,null=True,blank=True)
+    repeat_every = models.CharField(max_length=100,null=True,blank=True) 
+    payment_method = models.CharField(max_length=100,null=True,blank=True)
+    amt_paid = models.FloatField(null=True,blank=True)
+    balance = models.FloatField(null=True,blank=True)
     
     
 class PurchaseBillItems(models.Model):
@@ -1132,6 +1135,8 @@ class PurchaseBillItems(models.Model):
     rate = models.FloatField(null=True,blank=True)
     tax_percentage = models.IntegerField(null=True,blank=True)
     amount = models.FloatField(null=True,blank=True)
+    hsn = models.CharField(max_length=100,null=True,blank=True)
+    
     
     
 class payment_termsE(models.Model):
