@@ -5032,8 +5032,7 @@ def edit_recurring_bills(request,id):
     sales_type = set(Sales.objects.values_list('Account_type', flat=True))
     purchase_type = set(Purchase.objects.values_list('Account_type', flat=True))
     recur_bills = recurring_bills.objects.get(user = request.user,id=id)
-    recur_item = recurring_bills_items.objects.filter(user = request.user,recur_bills = id)   
-
+    recur_item = recurring_bills_items.objects.filter(user = request.user,recur_bills = id) 
     c = customer.objects.filter(user = request.user).get(id = recur_bills.customer_name.split(' ')[0])
     v = vendor_table.objects.filter(user = request.user).get(id = recur_bills.vendor_name.split(" ")[0])
     # print(recur_bills.customer_name.split(" ")[2:])
@@ -10173,6 +10172,8 @@ def create_purchase_bill(request):
         repeat_every = request.POST['repeats']
         payment_method = request.POST['paymentmethod']
         amt_paid = request.POST['amtPaid']
+        adjustment = request.POST['add_round_off']
+        
        
         hsn = request.POST['HSN0']
         
@@ -10208,7 +10209,7 @@ def create_purchase_bill(request):
                              vendor_email=vendor_email,vendor_gst_no = vendor_gst,source_of_supply=sos,bill_no=bill_number, order_number=order_number, bill_date=bill_date, 
                              due_date=due_date,payment_terms=terms, sub_total=sub_total,igst=igst,sgst=sgst,cgst=cgst,tax_amount=tax_amnt, 
                              shipping_charge=shipping,discount=discount, total=total, status=status,attachment=attachment,repeat_every=repeat_every,
-                             payment_method=payment_method,amt_paid=amt_paid,balance=balance)
+                             payment_method=payment_method,amt_paid=amt_paid,balance=balance, adjustment= adjustment)
         bill.save()
 
         if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
@@ -10238,8 +10239,8 @@ def create_purchase_bill1(request):
         terms = request.POST['p_terms']
         repeat_every = request.POST['repeats']
         payment_method = request.POST['paymentmethod']
+        adjustment = request.POST['add_round_off']
         amt_paid = request.POST['amtPaid']
-       
         hsn = request.POST['HSN0']
 
         item = request.POST.getlist('item[]')
@@ -10273,7 +10274,7 @@ def create_purchase_bill1(request):
                              vendor_email=vendor_email,vendor_gst_no=vendor_gst,source_of_supply=sos,bill_no=bill_number, order_number=order_number, bill_date=bill_date, 
                              due_date=due_date,payment_terms=terms, sub_total=sub_total,igst=igst,sgst=sgst,cgst=cgst,tax_amount=tax_amnt, 
                              shipping_charge=shipping,discount=discount, total=total, status=status,attachment=attachment,repeat_every=repeat_every,
-                             payment_method=payment_method,amt_paid=amt_paid,balance=balance)
+                             payment_method=payment_method,amt_paid=amt_paid,balance=balance,adjustment=adjustment)
         bill.save()
 
         if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
@@ -10318,11 +10319,18 @@ def edit_bill(request,bill_id):
     items = AddItem.objects.filter(user_id=user.id)
     bill = PurchaseBills.objects.get(id=bill_id)
     bill_items = PurchaseBillItems.objects.filter(purchase_bill=bill)
+    units = Unit.objects.all()
     terms = payment_terms.objects.all()
     account = Chart_of_Account.objects.all()
     account_types = Chart_of_Account.objects.values_list('account_type', flat=True).distinct()
     sales_acc = Sales.objects.all()
     pur_acc = Purchase.objects.all()
+    last_id = PurchaseBills.objects.filter(user_id=user.id).order_by('-id').values('id').first()
+    if last_id:
+        last_id = last_id['id']
+        next_no = last_id+1
+    else:
+        next_no = 1
     context = {
         'company': company,
         'bill': bill,
@@ -10335,6 +10343,7 @@ def edit_bill(request,bill_id):
         'acc_types':account_types,
         's_acc': sales_acc,
         'p_acc': pur_acc,
+        'units': units,
     }
     return render(request, 'edit_bill.html', context)
 
