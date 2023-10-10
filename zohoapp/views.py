@@ -5092,8 +5092,8 @@ def change_recurring_bills(request,id):
         r_bill.adjustment =request.POST['add_round_off']
         r_bill.status = 'Save'
         
-        grand_total = request.POST.get('grand_total')
-        amt_paid = request.POST['amtPaid']
+        r_bill.grand_total = request.POST.get('grand_total')
+        r_bill.amt_paid = request.POST['amtPaid']
         r_bill.balance = float(grand_total) - float(amt_paid)
 
         r_bill.cname_recur_id = cust.id
@@ -5189,8 +5189,8 @@ def change_draft_recurring_bills(request,id):
         r_bill.bill_no =  request.POST.get('bills')
         r_bill.adjustment =request.POST['add_round_off']
         r_bill.status = 'Draft'
-        grand_total = request.POST.get('grand_total')
-        amt_paid = request.POST['amtPaid']
+        r_bill.grand_total = request.POST.get('grand_total')
+        r_bill.amt_paid = request.POST['amtPaid']
         
         r_bill.balance = float(grand_total) - float(amt_paid)
         r_bill.cname_recur_id = cust.id
@@ -10169,6 +10169,7 @@ def create_purchase_bill(request):
         order_number = request.POST['order_number']
         bill_date = request.POST['bill_date']
         due_date = request.POST['due_date']
+        terms = request.POST['p_terms']
         repeat_every = request.POST['repeats']
         payment_method = request.POST['paymentmethod']
         amt_paid = request.POST['amtPaid']
@@ -10293,11 +10294,13 @@ def bill_view(request, b_id):
     bills = PurchaseBills.objects.filter(user=user)
     bill = PurchaseBills.objects.get(id=b_id)
     items = PurchaseBillItems.objects.filter(purchase_bill=bill)
+    comment = purchase_comments.objects.filter(purchase_bill=b_id)
     context = {
         'company': company,
         'bills': bills,
         'bill': bill,
         'items': items,
+        'comments':comment,
     }
     return render(request, 'bill_slip.html', context)
 
@@ -10411,6 +10414,72 @@ def update_bills(request,pk):
                 created = PurchaseBillItems.objects.create(
                     purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5])
     return redirect('bill_view',b_id = bill.id)
+
+def update_bills_save(request,pk):
+    cur_user = request.user
+    user = User.objects.get(id=cur_user.id)
+
+    if request.method == 'POST':
+        bill = PurchaseBills.objects.get(id=pk)
+        bill.user = user
+        bill.vendor_name = request.POST['vendor_name']
+        bill.vendor_email = request.POST['vendor_email']
+        bill.source_of_supply = request.POST['sos']
+        bill.customer_name = request.POST['customer_name']
+        bill.customer_email = request.POST['customer_email']
+        bill.place_of_supply = request.POST['pos']
+        bill.bill_no = request.POST['bill_number']
+        bill.order_number = request.POST['order_number']
+        bill.bill_date = request.POST['bill_date']
+        bill.due_date = request.POST['due_date']
+        bill.payment_terms = request.POST['p_terms']
+
+        bill.sub_total = request.POST['subtotal']
+        bill.igst = request.POST['igst']
+        bill.sgst = request.POST['sgst']
+        bill.cgst = request.POST['cgst']
+        bill.tax_amount = request.POST['total_taxamount']
+        bill.shipping_charge = request.POST['shipping_charge']
+        bill.discount = request.POST['discount_amnt']
+        bill.total = request.POST['total']
+        bill.status = 'Save'
+
+        old=bill.attachment
+        new=request.FILES.get('file')
+        if old != None and new == None:
+            bill.attachment = old
+        else:
+            bill.attachment = new
+
+        bill.save()
+
+        item = request.POST.getlist('item[]')
+        account = request.POST.getlist('account[]')
+        quantity = request.POST.getlist('quantity[]')
+        rate = request.POST.getlist('rate[]')
+        tax = request.POST.getlist('tax[]')
+        amount = request.POST.getlist('amount[]')
+
+       
+        # print(item)
+        # print(quantity)
+        # print(rate)
+        # print(discount)
+        # print(tax)
+        # print(amount)
+
+        objects_to_delete = PurchaseBillItems.objects.filter(purchase_bill_id=bill.id)
+        objects_to_delete.delete()
+
+        
+        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
+            mapped = zip(item, quantity, rate, account, tax, amount)
+            mapped = list(mapped)
+            for element in mapped:
+                created = PurchaseBillItems.objects.create(
+                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5])
+    return redirect('bill_view',b_id = bill.id)
+
 
 def upload_file_bills(request,bill_id):
     if request.method == 'POST':
@@ -15875,3 +15944,40 @@ def profilename_recurring_sort(request,id):
             }
 
     return render(request, 'view_recurring_bills.html',context)
+
+
+@login_required(login_url='regcomp')
+def add_purchase_comments(request,id):
+    if request.method == 'POST':
+        
+        purchase_bill = PurchaseBills.objects.get(id=id)
+        
+        comment = request.POST['comments']
+        user = User.objects.get(id=request.user.id)
+        
+        comments= purchase_comments(purchase_bill=purchase_bill,user=user,comment=comment)
+        comments.save()
+        return redirect('bill_view',id)
+
+@login_required(login_url='regcomp')
+def delete_purchase_comments(request,id,commentid):
+    try:
+        print(str(commentid))
+        comment = purchase_comments.objects.get(commentid=commentid)
+        print(comment)
+        comment.delete()
+        return redirect('bill_view',id)
+    except:
+        return redirect('bill_view',id)
+    
+def covert_to_purchase_bills(request, id): 
+    
+    purchase_bill = PurchaseBills.objects.get(user=request.user, id=id)
+    
+    if purchase_bill.status == 'Draft':
+        purchase_bill.status = 'Save'
+    elif purchase_bill.status == 'Save':
+        purchase_bill.status = 'Draft'
+    purchase_bill.save()  
+    
+    return redirect('bill_view', id)

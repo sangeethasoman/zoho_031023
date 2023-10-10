@@ -752,6 +752,10 @@ urlpatterns = [
     path('billno_recurring_sort/<int:id>',views.billno_recurring_sort,name='billno_recurring_sort'),
     path('vendor_recurring_sort/<int:id>',views.vendor_recurring_sort,name='vendor_recurring_sort'),
     path('profilename_recurring_sort/<int:id>',views.profilename_recurring_sort,name='profilename_recurring_sort'),
+    path('add_purchase_comments/<int:id>', views.add_purchase_comments, name='add_purchase_comments'),
+    path('delete_purchase_comments/<int:id>/<int:commentid>', views.delete_purchase_comments, name='delete_purchase_comments'),
+    path('covert_to_purchase_bills/<int:id>/',views.covert_to_purchase_bills,name='covert_to_purchase_bills'),
+    path('update_bills_save/<int:pk>',views.update_bills_save,name='update_bills_save'),
     
     
 ]

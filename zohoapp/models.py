@@ -1132,6 +1132,7 @@ class PurchaseBills(models.Model):
     
     
 class PurchaseBillItems(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     purchase_bill = models.ForeignKey(PurchaseBills,on_delete=models.CASCADE,null=True,blank=True)
     item_name = models.CharField(max_length=100,null=True,blank=True)
     account = models.CharField(max_length=100,null=True,blank=True)
@@ -1464,6 +1465,12 @@ class repeat(models.Model):
 class rec_comments(models.Model):
     commentid = models.AutoField(('COMMENTID'), primary_key=True)
     recur_bills = models.ForeignKey(recurring_bills,on_delete=models.CASCADE,null=True,blank=True)
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,default='') 
+    comment = models.CharField(max_length=250,null=True)
+
+class purchase_comments(models.Model):
+    commentid = models.AutoField(('COMMENTID'), primary_key=True)
+    purchase_bill = models.ForeignKey(PurchaseBills,on_delete=models.CASCADE,null=True,blank=True)
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,default='') 
     comment = models.CharField(max_length=250,null=True)
 
