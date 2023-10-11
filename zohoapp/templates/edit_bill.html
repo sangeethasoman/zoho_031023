@@ -168,20 +168,30 @@
         }
     }
 
-    function update() {
-
-        var frm = document.getElementById("forms");
-        frm.action = ("{% url 'create_purchase_bill' %}")
+    function saveAsDraftDialog() {
+    let grand_total = $('#grandtotal').val();
+    let paid = $('#amtPaid').val(); 
+    if(parseFloat(paid) > parseFloat(grand_total)){
+       alert("Paid amount should not be greater than grand total.")
     }
-
-    function saveAndOpenDialog() {
-
-        var frm = document.getElementById("forms");
-        frm.action = ("{% url 'create_purchase_bill1' %}")
+    else{
+      var frm = document.getElementById("forms");
+      frm.action = ("{% url 'update_bills' pk=id %}")
     }
-    $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
+  }
+function saveAndOpenDialog() {
+
+let grand_total = $('#grandtotal').val();
+let paid = $('#amtPaid').val(); 
+if(parseFloat(paid) > parseFloat(grand_total)){
+   alert("Paid amount should not be greater than grand total.")
+}
+else{
+  var frm = document.getElementById("forms");
+  frm.action = ("{% url 'update_bills_save' pk=id %}")
+}
+  
+}
 
 
 
@@ -199,7 +209,7 @@
     </div>
 
     <!-- <div style="height: 600px; overflow-y: scroll;"> -->
-        <form method="POST" action="{% url 'update_bills' bill.id %}" class="p-5" enctype="multipart/form-data" novalidate id="forms">
+        <form method="POST"  class="p-5" enctype="multipart/form-data" novalidate id="forms">
             {% csrf_token %}
             <div class="row mb-4  pt-5">
                 <div class="col-sm-2"><label for="customer_name">Vendor Name*</label></div>
@@ -227,26 +237,19 @@
 
                 </div>
             </div>
-            <!-- <div class="row mt-2" id="gst_trt_row">
-              <div class="col-md-3">
-                <label for="gst_trt_inp">GST Treatment</label>
-              </div>
-              <div class="col-md-6">
-                <input type="text" class="form-control text-dark bg-light" id="gst_trt_inp" name="gst_trt_inp" >
-              </div>
-            </div> -->
+            
             <div class="row mb-4" >
-              <div class="col-sm-2"><label for="gst_trt_inp">GST Treatment</div>
+              <div class="col-sm-2"><label for="v_gsttype">GST Treatment</div>
               <div class="col-sm-10"> <input type="text" class="form-control bg-white text-dark"
-                style="width: 50%;" id="gst_trt_inp" name="gst_trt_inp" value="{{bill.vendor_email}}">
+                style="width: 50%;" id="v_gsttype" name="v_gsttype" value="{{bill.v_gsttype}}">
 
               </div>
           </div>
             
             <div class="row mb-4" >
-              <div class="col-sm-2"><label for="vendor_sos">GST Number</div>
-              <div class="col-sm-10"><input type="text" id="gst_no" name="gst_no" class="form-control bg-white text-dark"
-                      style="width: 50%;" value="{{bill.vendor_gst_no}}">
+              <div class="col-sm-2"><label for="gstin_inp">GST Number</div>
+              <div class="col-sm-10"><input type="text" id="gstin_inp" name="gstin_inp" class="form-control bg-white text-dark"
+                      style="width: 50%;" value="{{bill.gstin_inp}}">
 
               </div>
           </div>
@@ -357,34 +360,67 @@
               </div>
           </div>
           <div class="row mb-4" id="cgst_trt_row">
-            <div class="col-sm-2"> <label for="gst_trt_inp">GST Treatment</label></div>
-            <div class="col-5"><input type="text" class="form-control bg-white text-dark"  id="cgst_trt_inp" name="cgst_trt_inp">
+            <div class="col-sm-2"> <label for="c_gsttype">GST Treatment</label></div>
+            <div class="col-5"><input type="text" class="form-control bg-white text-dark"  id="c_gsttype" name="c_gsttype" style="width: 105%;">
 
             </div>
         </div>
         <div class="row mb-4" id="cgstin_row">
           <div class="col-sm-2"> <label for="gstin_inp">GST Number</label></div>
-          <div class="col-5"><input type="text" class="form-control text-dark bg-light" id="cgstin_inp" name="cgstin_inp">
+          <div class="col-5"><input type="text" class="form-control text-dark bg-light" id="cgstin_inp" name="cgstin_inp" style="width: 105%;">
 
           </div>
+          <div class="row mb-4 pt-4">
+            <div class="col-sm-2"><label for="paymentmethod">Payment Method</label></div>
+            <div class="col-sm-10"><select name="paymentmethod" id="paymentmethod" class="form-control bg-white text-dark" style="width: 53%;">
+              <option id="crt_paymt_method" value="{{bill.payment_method}}" selected>{{bill.payment_method}}</option>
+              <option value="Cash">Cash</option>
+              <option value="Cheque">Cheque</option>
+              <optgroup label="BankName">Bank Name</optgroup>
+              <option value="not applicable">Not applicable</option> 
+              <option value="ALLAHABAD BANK">ALLAHABAD BANK </option>
+              <option value="ANDHRA BANK">ANDHRA BANK</option>
+              <option value="AXIS BANK">AXIS BANK</option>
+              <option value="STATE BANK OF INDIA">STATE BANK OF INDIA</option>
+              <option value="BANK OF BARODA">BANK OF BARODA</option>
+              <option value="UCO BANK">UCO BANK</option>
+              <option value="UNION BANK OF INDIA">UNION BANK OF INDIA</option>
+              <option value="BANK OF INDIA">BANK OF INDIA</option>
+              <option value="BANDHAN BANK LIMITED">BANDHAN BANK LIMITED</option>
+              <option value="CANARA BANK">CANARA BANK</option>
+              <option value="GRAMIN VIKASH BANK">GRAMIN VIKASH BANK</option>
+              <option value="CORPORATION BANK">CORPORATION BANK</option>
+              <option value="INDIAN BANK">INDIAN BANK</option>
+              <option value="INDIAN OVERSEAS BANK">INDIAN OVERSEAS BANK</option>
+              <option value="ORIENTAL BANK OF COMMERCE">ORIENTAL BANK OF COMMERCE</option>
+              <option value="PUNJAB AND SIND BANK">PUNJAB AND SIND BANK</option>
+              <option value="PUNJAB NATIONAL BANK">PUNJAB NATIONAL BANK</option>
+              <option value="RESERVE BANK OF INDIA">RESERVE BANK OF INDIA</option>
+              <option value="UNITED BANK OF INDIA">UNITED BANK OF INDIA</option>
+              <option value="CENTRAL BANK OF INDIA">CENTRAL BANK OF INDIA</option>
+              <option value="VIJAYA BANK">VIJAYA BANK</option>
+              <option value="DENA BANK">DENA BANK</option>
+              <option value="BHARATIYA MAHILA BANK LIMITED">BHARATIYA MAHILA BANK LIMITED</option>
+              <option value="FEDERAL BANK LTD">FEDERAL BANK LTD </option>
+              <option value="HDFC BANK LTD">HDFC BANK LTD</option>
+              <option value="ICICI BANK LTD">ICICI BANK LTD</option>
+              <option value="IDBI BANK LTD">IDBI BANK LTD</option>
+              <option value="PAYTM BANK">PAYTM BANK</option>
+              <option value="FINO PAYMENT BANK">FINO PAYMENT BANK</option>
+              <option value="INDUSIND BANK LTD">INDUSIND BANK LTD</option>
+              <option value="KARNATAKA BANK LTD">KARNATAKA BANK LTD</option>
+              <option value="KOTAK MAHINDRA BANK">KOTAK MAHINDRA BANK</option>
+              <option value="YES BANK LTD">YES BANK LTD</option>
+              <option value="SYNDICATE BANK">SYNDICATE BANK</option>
+              <option value="BANK OF INDIA">BANK OF INDIA</option>
+              <option value="BANK OF MAHARASHTRA">BANK OF MAHARASHTRA</option>
+             
+          </select>
+
+            </div>
+        </div>
       </div>
-          <!-- <div class="row mt-2" id="cgst_trt_row">
-            <div class="col-md-3">
-              <label for="gst_trt_inp">GST Treatment</label>
-            </div>
-            <div class="col-md-6">
-              <input type="text" class="form-control text-dark bg-light"  id="cgst_trt_inp" name="cgst_trt_inp">
-            </div>
-          </div>
-    
-          <div class="row mt-2 mb-2" id="cgstin_row">
-            <div class="col-md-3">
-              <label for="gstin_inp">GST Number</label>
-            </div>
-            <div class="col-md-6">
-              <input type="text" class="form-control text-dark bg-light" id="cgstin_inp" name="cgstin_inp">
-            </div>
-          </div> -->
+          
             <div class="form-check  pt-2 pb-5">
                 <input class="form-check-input" type="checkbox" value="" id="checkbox" onchange="updateTaxHeader()">
                 <label class="form-check-label" for="checkbox">
@@ -412,8 +448,7 @@
                 </thead>
                 <tbody>
 
-                  {% for item in bill_items  %}
-
+                  {% for item in bill_items  %} 
                     <tr id='row{{ forloop.counter }}'>
                         <td>
                             <div class='form-group'>
@@ -425,9 +460,7 @@
                                     {% endfor %}
                                 </select></div>
                         </td>
-                        <!-- <td  style="width: 50%;">
-                          <input type="text" value="0" name='HSN0' id="HSN0" placeholder='HSN' class='bg-transparent border-0 text-black text-right hsn'/>
-                        </td> -->
+                       
                         <td class='text-right'><input  type="text" value="{{item.hsn}}"  name='HSN0' id="HSN0" placeholder='HSN' style="width: 80px;"
                           class='bg-transparent border-0 text-black text-right qty'>
                         </td>
@@ -639,7 +672,7 @@
                         <td class='text-right'> <select name='tax[]' id='tax{{ forloop.counter }}'
                           class='bg-transparent border-0 text-black text-right tax'
                           onclick='handleTaxChange({{ forloop.counter }})'>
-                                <option value="{{item.tax_percentage}}" selected>{{item.tax_percentage}}% IGST</option>
+                                <option value="{{item.tax_percentage}}" selected>{{item.tax_percentage}}% </option>
                                 <optgroup label="GST" >
                                   <option value=0>0% GST</option>
                                   <option value=3>3% GST</option>
@@ -976,7 +1009,7 @@
                 <label id="glbl" style="color:rgb(190, 88, 88);">GSTIN/UIN *</label>
               </div>
               <div class="col-md-6 mt-2">
-                <input type="text" class="form-control bg-white text-dark" id="v_gstin" name="v_gstin" placeholder="29APPCK7465F1Z1">
+                <input type="text" class="form-control bg-white text-dark" id="c_gstin" name="c_gstin" placeholder="29APPCK7465F1Z1">
                 <label id="gst_label"></label>
               </div>       
             </div>
@@ -1951,14 +1984,7 @@
                 <input type="text" class="form-control bg-light text-dark" id="HSN" name="HSN" required>
               </div>
             </div>
-            <!-- <div class="row mt-2">
-              <div class="col-md-3">
-                <label for="name" style="color: rgb(190, 88, 88);">HSN</label>
-              </div>
-              <div class="col-md-6">
-                <input type="text" class="form-control text-dark bg-light" id="HSN" name="HSN" required>
-              </div>
-            </div> -->
+            
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Unit <i class="fa fa-question-circle"></i></label>
               <div class="col-sm-10 col-md-7 col-9" style="margin-left: -2.2rem;">
@@ -2434,6 +2460,41 @@
 
 <!-- Get customer data -->
 <script>
+  $(document).ready(function() {
+debugger
+select = $('#customer_sel').val();
+            // console.log(select);
+            $.ajax({
+                type: "GET",
+                url: "{% url 'get_customer_data_bill' %}",
+                data: {
+                    id: select
+                },
+                success: function (response) {
+                    // console.log(response)
+                    email = response.email
+                    pos = response.pos
+                    gst_treatment = response.gst_treatment
+                    gst_number = response.gst_number
+
+                    $("#cgst_trt_row").removeClass('d-none');
+                    $("#cgst_trt_row").addClass('d-flex');
+
+                    $("#cgstin_row").removeClass('d-none');
+                    $("#cgstin_row").addClass('d-flex');
+
+                    document.getElementById('customer_email').value = email
+                    document.getElementById('pos').value = pos
+                    document.getElementById('c_gsttype').value = gst_treatment
+                    document.getElementById('cgstin_inp').value = gst_number
+                }
+
+            });
+
+
+});
+
+
     $(document).ready(function () {
         $('#customer_sel').on('change', function () {
             select = $('#customer_sel').val();
@@ -2448,8 +2509,19 @@
                     // console.log(response)
                     email = response.email
                     pos = response.pos
+                    gst_treatment = response.gst_treatment
+                    gst_number = response.gst_number
+
+                    $("#cgst_trt_row").removeClass('d-none');
+                    $("#cgst_trt_row").addClass('d-flex');
+
+                    $("#cgstin_row").removeClass('d-none');
+                    $("#cgstin_row").addClass('d-flex');
+
                     document.getElementById('customer_email').value = email
                     document.getElementById('pos').value = pos
+                    document.getElementById('c_gsttype').value = gst_treatment
+                    document.getElementById('cgstin_inp').value = gst_number
 
                 }
 
@@ -2460,8 +2532,46 @@
     });
 </script>
 
+
 <!-- Get vendor data -->
 <script>
+
+$(document).ready(function() {
+debugger
+select = $('#vendor_sel').val();
+            // console.log(select);
+            $.ajax({
+                type: "GET",
+                url: "{% url 'get_vendor_data_bill' %}",
+                data: {
+                    id: select
+                },
+                success: function (response) {
+                  email = response.email
+                    sos = response.sos 
+                    gst_treatment = response.gst_treatment
+                    gst_number = response.gst_number
+ 
+                    $("#gst_trt_row").removeClass('d-none');
+                    $("#gst_trt_row").addClass('d-flex');
+                    $("#gstin_row").removeClass('d-none');
+                    $("#gstin_row").addClass('d-flex');
+                    $("#sos_row").removeClass('d-none');
+                    $("#sos_row").addClass('d-flex');
+
+
+                    document.getElementById('vendor_email').value = email
+                    document.getElementById('sos').value = sos
+                    document.getElementById('gstin_inp').value = gst_number
+                    document.getElementById('v_gsttype').value = gst_treatment
+                }
+
+            });
+
+
+});
+
+
     $(document).ready(function () {
         $('#vendor_sel').on('change', function () {
             select = $('#vendor_sel').val();
@@ -2473,15 +2583,23 @@
                     id: select
                 },
                 success: function (response) {
-                    email = response.email
-                    sos = response.sos
-                    gst_no = response.gst_no
-                    // console.log(email);
-                    // console.log(sos);
+                  email = response.email
+                    sos = response.sos 
+                    gst_treatment = response.gst_treatment
+                    gst_number = response.gst_number
+ 
+                    $("#gst_trt_row").removeClass('d-none');
+                    $("#gst_trt_row").addClass('d-flex');
+                    $("#gstin_row").removeClass('d-none');
+                    $("#gstin_row").addClass('d-flex');
+                    $("#sos_row").removeClass('d-none');
+                    $("#sos_row").addClass('d-flex');
+
+
                     document.getElementById('vendor_email').value = email
                     document.getElementById('sos').value = sos
-                    document.getElementById('gst_no').value = gst_no
-
+                    document.getElementById('gstin_inp').value = gst_number
+                    document.getElementById('v_gsttype').value = gst_treatment
                 }
 
             });
@@ -3668,6 +3786,7 @@ $.ajax({
       var cost_price = document.getElementsByName('cost_price')[0].value
       var cost_acc = document.getElementsByName('cost_acc')[0].value
       var cost_desc = document.getElementsByName('cost_desc')[0].value
+      var hsn = document.getElementsByName('HSN')[0].value
   
       $.ajax({
   
@@ -3848,7 +3967,7 @@ $.ajax({
                     rate = response.rate
 
                     document.getElementById('rate1').value = rate
-
+                    document.getElementById('HSN0').value = response.hsn
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
 
@@ -3882,6 +4001,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate2').value = rate;
+                    document.getElementById('HSN0').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4828,5 +4948,29 @@ $.ajax({
       var round = parseFloat($("#total").val()) + parseFloat($("#add_round_off").val()) 
       $("#total").val(round);
     });
+  </script>
+
+  <script>
+    $(document).ready(function() {
+  $("#item0").change(function() {
+    $.ajax({
+      url: "{% url 'get_rate' %}",
+      type : 'POST',
+      data:{
+          id : $("#item0").val(),
+      
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+    
+      success: function(response) {
+        $("#rate0").val(response.rate);
+        $("#HSN0").val(response.hsn);
+
+
+
+      },
+    });
+  });
+});
   </script>
 {% endblock %}

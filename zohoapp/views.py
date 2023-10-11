@@ -5094,6 +5094,8 @@ def change_recurring_bills(request,id):
         
         r_bill.grand_total = request.POST.get('grand_total')
         r_bill.amt_paid = request.POST['amtPaid']
+        grand_total = request.POST.get('grand_total')
+        amt_paid = request.POST['amtPaid']
         r_bill.balance = float(grand_total) - float(amt_paid)
 
         r_bill.cname_recur_id = cust.id
@@ -5191,7 +5193,8 @@ def change_draft_recurring_bills(request,id):
         r_bill.status = 'Draft'
         r_bill.grand_total = request.POST.get('grand_total')
         r_bill.amt_paid = request.POST['amtPaid']
-        
+        grand_total = request.POST.get('grand_total')
+        amt_paid = request.POST['amtPaid']
         r_bill.balance = float(grand_total) - float(amt_paid)
         r_bill.cname_recur_id = cust.id
 
@@ -10212,6 +10215,7 @@ def create_purchase_bill(request):
                              shipping_charge=shipping,discount=discount, total=total, status=status,attachment=attachment,repeat_every=repeat_every,
                              payment_method=payment_method,amt_paid=amt_paid,balance=balance, adjustment= adjustment)
         bill.save()
+        discount = 0 if request.POST.getlist['discount_amnt'] == " " else request.POST.getlist("discount[]")
 
         if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
             mapped = zip(item, quantity, rate, account, tax, amount)
@@ -10277,6 +10281,7 @@ def create_purchase_bill1(request):
                              shipping_charge=shipping,discount=discount, total=total, status=status,attachment=attachment,repeat_every=repeat_every,
                              payment_method=payment_method,amt_paid=amt_paid,balance=balance,adjustment=adjustment)
         bill.save()
+        discount = 0 if request.POST.getlist['discount_amnt'] == " " else request.POST.getlist("discount[]")
 
         if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
             mapped = zip(item, quantity, rate, account, tax, amount)
@@ -10334,6 +10339,7 @@ def edit_bill(request,bill_id):
         next_no = last_id+1
     else:
         next_no = 1
+    print(bill_items)
     context = {
         'company': company,
         'bill': bill,
@@ -10347,6 +10353,8 @@ def edit_bill(request,bill_id):
         's_acc': sales_acc,
         'p_acc': pur_acc,
         'units': units,
+        'id': bill_id,
+        
     }
     return render(request, 'edit_bill.html', context)
 
@@ -10359,6 +10367,7 @@ def update_bills(request,pk):
         bill.user = user
         bill.vendor_name = request.POST['vendor_name']
         bill.vendor_email = request.POST['vendor_email']
+        bill.vendor_gst = request.POST['gstin_inp']
         bill.source_of_supply = request.POST['sos']
         bill.customer_name = request.POST['customer_name']
         bill.customer_email = request.POST['customer_email']
@@ -10368,16 +10377,25 @@ def update_bills(request,pk):
         bill.bill_date = request.POST['bill_date']
         bill.due_date = request.POST['due_date']
         bill.payment_terms = request.POST['p_terms']
+        bill.repeat_every = request.POST['repeats']
+        bill.payment_method = request.POST['paymentmethod']
+        bill.adjustment = request.POST['add_round_off']
+        bill.amt_paid = request.POST['amtPaid']
+        bill.hsn = request.POST['HSN0']
 
         bill.sub_total = request.POST['subtotal']
         bill.igst = request.POST['igst']
         bill.sgst = request.POST['sgst']
         bill.cgst = request.POST['cgst']
         bill.tax_amount = request.POST['total_taxamount']
-        bill.shipping_charge = request.POST['shipping_charge']
-        bill.discount = request.POST['discount_amnt']
+        bill.shipping_charge = request.POST['shipping_charge'] 
         bill.total = request.POST['total']
         bill.status = 'Draft'
+        total = request.POST['total']
+        amt_paid = request.POST['amtPaid']
+        bill.balance = float(total) - float(amt_paid)
+        
+        bill.discount = request.POST.getlist('discount[]')
 
         old=bill.attachment
         new=request.FILES.get('file')
@@ -10394,7 +10412,6 @@ def update_bills(request,pk):
         rate = request.POST.getlist('rate[]')
         tax = request.POST.getlist('tax[]')
         amount = request.POST.getlist('amount[]')
-
        
         # print(item)
         # print(quantity)
@@ -10405,10 +10422,9 @@ def update_bills(request,pk):
 
         objects_to_delete = PurchaseBillItems.objects.filter(purchase_bill_id=bill.id)
         objects_to_delete.delete()
-
-        
+ 
         if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
-            mapped = zip(item, quantity, rate, account, tax, amount)
+            mapped = zip(item, quantity, rate, account, tax, amount,discount)
             mapped = list(mapped)
             for element in mapped:
                 created = PurchaseBillItems.objects.create(
@@ -10424,6 +10440,7 @@ def update_bills_save(request,pk):
         bill.user = user
         bill.vendor_name = request.POST['vendor_name']
         bill.vendor_email = request.POST['vendor_email']
+        bill.vendor_gst = request.POST['gstin_inp']
         bill.source_of_supply = request.POST['sos']
         bill.customer_name = request.POST['customer_name']
         bill.customer_email = request.POST['customer_email']
@@ -10433,6 +10450,11 @@ def update_bills_save(request,pk):
         bill.bill_date = request.POST['bill_date']
         bill.due_date = request.POST['due_date']
         bill.payment_terms = request.POST['p_terms']
+        bill.repeat_every = request.POST['repeats']
+        bill.payment_method = request.POST['paymentmethod']
+        bill.adjustment = request.POST['add_round_off']
+        bill.amt_paid = request.POST['amtPaid']
+        bill.hsn = request.POST['HSN0']
 
         bill.sub_total = request.POST['subtotal']
         bill.igst = request.POST['igst']
@@ -10440,9 +10462,14 @@ def update_bills_save(request,pk):
         bill.cgst = request.POST['cgst']
         bill.tax_amount = request.POST['total_taxamount']
         bill.shipping_charge = request.POST['shipping_charge']
-        bill.discount = request.POST['discount_amnt']
+        
         bill.total = request.POST['total']
         bill.status = 'Save'
+        total = request.POST['total']
+        amt_paid = request.POST['amtPaid']
+        bill.balance = float(total) - float(amt_paid)
+        bill.discount = request.POST.getlist('discount[]')
+
 
         old=bill.attachment
         new=request.FILES.get('file')
@@ -10459,7 +10486,7 @@ def update_bills_save(request,pk):
         rate = request.POST.getlist('rate[]')
         tax = request.POST.getlist('tax[]')
         amount = request.POST.getlist('amount[]')
-
+        
        
         # print(item)
         # print(quantity)
@@ -10471,7 +10498,7 @@ def update_bills_save(request,pk):
         objects_to_delete = PurchaseBillItems.objects.filter(purchase_bill_id=bill.id)
         objects_to_delete.delete()
 
-        
+       
         if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
             mapped = zip(item, quantity, rate, account, tax, amount)
             mapped = list(mapped)
@@ -15981,3 +16008,85 @@ def covert_to_purchase_bills(request, id):
     purchase_bill.save()  
     
     return redirect('bill_view', id)
+
+def billno_purchase_sort(request, b_id):
+    user = request.user
+    company = company_details.objects.get(user=user)
+    bills = PurchaseBills.objects.filter(user=user).order_by('bill_no')
+    bill = PurchaseBills.objects.get(id=b_id)
+    items = PurchaseBillItems.objects.filter(purchase_bill=bill)
+    comment = purchase_comments.objects.filter(purchase_bill=b_id)
+    context = {
+        'company': company,
+        'bills': bills,
+        'bill': bill,
+        'items': items,
+        'comments':comment,
+    }
+    return render(request, 'bill_slip.html', context)
+
+def vendor_purchase_sort(request, b_id):
+    user = request.user
+    company = company_details.objects.get(user=user)
+    bills = PurchaseBills.objects.filter(user=user).order_by('vendor_name')
+    bill = PurchaseBills.objects.get(id=b_id)
+    items = PurchaseBillItems.objects.filter(purchase_bill=bill)
+    comment = purchase_comments.objects.filter(purchase_bill=b_id)
+    context = {
+        'company': company,
+        'bills': bills,
+        'bill': bill,
+        'items': items,
+        'comments':comment,
+    }
+    return render(request, 'bill_slip.html', context)
+
+def customer_purchase_sort(request, b_id):
+    user = request.user
+    company = company_details.objects.get(user=user)
+    bills = PurchaseBills.objects.filter(user=user).order_by('customer_name')
+    bill = PurchaseBills.objects.get(id=b_id)
+    items = PurchaseBillItems.objects.filter(purchase_bill=bill)
+    comment = purchase_comments.objects.filter(purchase_bill=b_id)
+    context = {
+        'company': company,
+        'bills': bills,
+        'bill': bill,
+        'items': items,
+        'comments':comment,
+    }
+    return render(request, 'bill_slip.html', context)
+
+def purchase_bill_save(request, b_id):
+    user = request.user
+    company = company_details.objects.get(user=user)
+    bills = PurchaseBills.objects.filter(user = request.user, status = 'Save')
+    bill = PurchaseBills.objects.get(id=b_id)
+    items = PurchaseBillItems.objects.filter(purchase_bill=bill)
+    comment = purchase_comments.objects.filter(purchase_bill=b_id)
+    context = {
+        'company': company,
+        'bills': bills,
+        'bill': bill,
+        'items': items,
+        'comments':comment,
+    }
+    return render(request, 'bill_slip.html', context)
+
+def purchase_bill_draft(request, b_id):
+    user = request.user
+    company = company_details.objects.get(user=user)
+    bills = PurchaseBills.objects.filter(user = request.user, status = 'Draft')
+    bill = PurchaseBills.objects.get(id=b_id)
+    items = PurchaseBillItems.objects.filter(purchase_bill=bill)
+    comment = purchase_comments.objects.filter(purchase_bill=b_id)
+    context = {
+        'company': company,
+        'bills': bills,
+        'bill': bill,
+        'items': items,
+        'comments':comment,
+    }
+    return render(request, 'bill_slip.html', context)
+
+

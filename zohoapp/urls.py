@@ -756,6 +756,11 @@ urlpatterns = [
     path('delete_purchase_comments/<int:id>/<int:commentid>', views.delete_purchase_comments, name='delete_purchase_comments'),
     path('covert_to_purchase_bills/<int:id>/',views.covert_to_purchase_bills,name='covert_to_purchase_bills'),
     path('update_bills_save/<int:pk>',views.update_bills_save,name='update_bills_save'),
+    path('billno_purchase_sort/<int:b_id>',views.billno_purchase_sort,name='billno_purchase_sort'),
+    path('vendor_purchase_sort/<int:b_id>',views.vendor_purchase_sort,name='vendor_purchase_sort'),
+    path('customer_purchase_sort/<int:b_id>',views.customer_purchase_sort,name='customer_purchase_sort'),
+    path('purchase_bill_save/<int:b_id>',views.purchase_bill_save,name='purchase_bill_save'),
+    path('purchase_bill_draft/<int:b_id>',views.purchase_bill_draft,name='purchase_bill_draft'),
     
     
 ]
