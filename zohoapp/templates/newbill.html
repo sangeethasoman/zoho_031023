@@ -435,7 +435,7 @@
                                 </select></div>
                         </td>
                         <td  style="width: 50%;">
-                          <input type="text" value="0" name='HSN0' id="HSN0" placeholder='HSN' class='form-control bg-transparent text-black border-0 item_select itm' />
+                          <input type="text" value="0" name='HSN[]' id="HSN0" placeholder='HSN' class='form-control bg-transparent text-black border-0 item_select itm' />
                         </td>
                         <td>
                             <div class='form-group'>
@@ -665,7 +665,7 @@
                             
                         </td>
                         <td class='text-right'> 
-                          <input type="number" id="discount" name="discount_amnt"  style="width: 60px;"  value='0.00' class='bg-transparent border-0 text-black text-right discount' step="0.00" min="0"/>
+                          <input type="number" id="discount" name="discount[]"  style="width: 60px;"  value='0.00' class='bg-transparent border-0 text-black text-right discount' step="0.00" min="0"/>
                         </td> 
                         <td style="display: none;">
                             <input type="number" name='taxamount[]' id="taxamount1" class="form-control taxamount" />
@@ -739,7 +739,7 @@
                         <tr>
                             <td>Adjustment</td>
                             <td></td>
-                            <td><input type="number" id="adjustment" name="adjustment_amnt" value="0" > <i class="fas fa-question"></i></td>
+                            <td><input type="number" id="adjustment" name="add_round_off" value="0" > <i class="fas fa-question"></i></td>
                             <!-- <td><input type="number" id="discount" name="discount_amnt" value="0" > <i class="fas fa-question"></i></td> -->
                             <!-- <td><input type="text" id="discount_amnt" name="discount_amnt" step="any" 
                                     class="form-control bg-transparent border-0 text-right discount_amnt text-dark">
@@ -2543,6 +2543,9 @@
                             {% endfor %}
                         </select></div>
                 </td>
+                <td class='text-right'><input type='number' id='HSN0${RowCount}'
+                        class='bg-transparent border-0 text-black text-right discount' name='hsn[]' step="0.00" min="0"></td>
+                <td>
                 <td>
                     <div class='form-group'>
                         <select class='form-control bg-transparent text-black border-0 account '
@@ -2771,6 +2774,8 @@
                 <td style="display: none;">
                     <input type="text" name='taxamount[]' id="taxamount${RowCount}" class="form-control taxamount" />
                             </td>
+                            <td class='text-right'><input type='number' id='discount${RowCount}'
+                        class='bg-transparent border-0 text-black text-right discount' name='discount[]' value='0.00'></td>
                 <td class='text-right'><input type='number' id='amount${RowCount}'
                         class='bg-transparent border-0 text-black text-right amount' name='amount[]' value='0.00'></td>
                 <td class='text-center'><button type='button' id='copy_btn${RowCount}'
@@ -2794,12 +2799,14 @@
 
             // Get the values from the current row
             var currentItem = $(this).closest('tr').find("select[name='item[]']").val();
+            var currentHSN = $(this).closest('tr').find("select[name='HSN[]']").val();
             var currentAccount = $(this).closest('tr').find("select[name='account[]']").val();
             var currentQuantity = $(this).closest('tr').find("input[name='quantity[]']").val();
             var currentRate = $(this).closest('tr').find("input[name='rate[]']").val();
             var currentTax = $(this).closest('tr').find("select[name='tax[]']").val();
             var currentTaxText = $(this).closest('tr').find("select[name='tax[]'] option:selected").text();
             var currentTaxAmount = $(this).closest('tr').find("input[name='taxamount[]']").val();
+            var currentDiscount = $(this).closest('tr').find("input[name='discount[]']").val();
             var currentAmount = $(this).closest('tr').find("input[name='amount[]']").val();
             // console.log(currentItem);
             console.log(currentAccount);
@@ -2822,6 +2829,9 @@
                             {% endfor %}
                         </select></div>
                 </td>
+                <td class='text-right'><input type='number' id='HSN0${RowCount}'
+                        class='bg-transparent border-0 text-black text-right discount' name='hsn[]' step="0.00" min="0"></td>
+                <td>
                 <td>
                     <div class='form-group'>
                         <select class='form-control bg-transparent text-black border-0 account '
@@ -3051,6 +3061,9 @@
                 <td style="display: none;">
                     <input type="text" name='taxamount[]' id="taxamount${RowCount}" class="form-control taxamount" value="${currentTaxAmount}"/>
                             </td>
+
+                            <td class='text-right'><input type='number' id='discount${RowCount}'
+                        class='bg-transparent border-0 text-black text-right discount' name='discount[]' value='0.00'></td>
                 <td class='text-right'><input type='number' id='amount${RowCount}' value="${currentAmount}"
                         class='bg-transparent border-0 text-black text-right amount' name='amount[]' value='0.00'></td>
                 <td class='text-center'><button type='button' id='copy_btn${RowCount}'

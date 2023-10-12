@@ -1117,7 +1117,6 @@ class PurchaseBills(models.Model):
     cgst = models.FloatField(null=True,blank=True)
     tax_amount = models.FloatField(null=True,blank=True)
     shipping_charge = models.FloatField(null=True,blank=True)
-    discount = models.FloatField(null=True,blank=True)
     total = models.FloatField(null=True,blank=True)
     status = models.CharField(max_length=100,null=True,blank=True)
     attachment = models.ImageField(upload_to="image/", null=True)  
@@ -1141,6 +1140,7 @@ class PurchaseBillItems(models.Model):
     tax_percentage = models.IntegerField(null=True,blank=True)
     amount = models.FloatField(null=True,blank=True)
     hsn = models.CharField(max_length=100,null=True,blank=True)
+    discount = models.FloatField(null=True,blank=True)
     
     
     

@@ -10179,7 +10179,6 @@ def create_purchase_bill(request):
         adjustment = request.POST['add_round_off']
         
        
-        hsn = request.POST['HSN0']
         
 
         item = request.POST.getlist('item[]')
@@ -10188,6 +10187,8 @@ def create_purchase_bill(request):
         rate = request.POST.getlist('rate[]')
         tax = request.POST.getlist('tax[]')
         amount = request.POST.getlist('amount[]')
+        hsn = request.POST.getlist('HSN[]')
+        discount = request.POST.getlist('discount[]')
         # print(item)
         # print(quantity)
         # print(rate)
@@ -10202,7 +10203,7 @@ def create_purchase_bill(request):
         cgst = request.POST['cgst']
         tax_amnt = request.POST['total_taxamount']
         shipping = request.POST['shipping_charge']
-        discount = request.POST['discount_amnt']
+        
         total = request.POST['total']
         # tearms_conditions = request.POST['tearms_conditions']
         attachment = request.FILES.get('file')
@@ -10212,17 +10213,16 @@ def create_purchase_bill(request):
         bill = PurchaseBills(user=user,cusname_id=custo, customer_name=cust_name,customer_email= cust_email,place_of_supply=pos,vendor_name=vendor_name,
                              vendor_email=vendor_email,vendor_gst_no = vendor_gst,source_of_supply=sos,bill_no=bill_number, order_number=order_number, bill_date=bill_date, 
                              due_date=due_date,payment_terms=terms, sub_total=sub_total,igst=igst,sgst=sgst,cgst=cgst,tax_amount=tax_amnt, 
-                             shipping_charge=shipping,discount=discount, total=total, status=status,attachment=attachment,repeat_every=repeat_every,
+                             shipping_charge=shipping,total=total, status=status,attachment=attachment,repeat_every=repeat_every,
                              payment_method=payment_method,amt_paid=amt_paid,balance=balance, adjustment= adjustment)
         bill.save()
-        discount = 0 if request.POST.getlist['discount_amnt'] == " " else request.POST.getlist("discount[]")
-
-        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
-            mapped = zip(item, quantity, rate, account, tax, amount)
+        
+        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount) == len(hsn) == len(discount):
+            mapped = zip(item, quantity, rate, account, tax, amount, hsn, discount)
             mapped = list(mapped)
             for element in mapped:
                 created = PurchaseBillItems.objects.create(
-                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5],hsn=hsn)
+                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5], hsn=element[6], discount=element[7])
     return redirect('view_bills')
 
 
@@ -10246,7 +10246,7 @@ def create_purchase_bill1(request):
         payment_method = request.POST['paymentmethod']
         adjustment = request.POST['add_round_off']
         amt_paid = request.POST['amtPaid']
-        hsn = request.POST['HSN0']
+        
 
         item = request.POST.getlist('item[]')
         account = request.POST.getlist('account[]')
@@ -10254,12 +10254,8 @@ def create_purchase_bill1(request):
         rate = request.POST.getlist('rate[]')
         tax = request.POST.getlist('tax[]')
         amount = request.POST.getlist('amount[]')
-        # print(item)
-        # print(quantity)
-        # print(rate)
-        # print(discount)
-        # print(tax)
-        # print(amount)
+        hsn = request.POST.getlist('HSN[]')
+        discount = request.POST.getlist('discount[]')
 
         # cust_note = request.POST['customer_note']
         sub_total = request.POST['subtotal']
@@ -10268,7 +10264,7 @@ def create_purchase_bill1(request):
         cgst = request.POST['cgst']
         tax_amnt = request.POST['total_taxamount']
         shipping = request.POST['shipping_charge']
-        discount = request.POST['discount_amnt']
+       
         total = request.POST['total']
         # tearms_conditions = request.POST['tearms_conditions']
         attachment = request.FILES.get('file')
@@ -10278,17 +10274,17 @@ def create_purchase_bill1(request):
         bill = PurchaseBills(user=user, customer_name=cust_name,customer_email= cust_email,place_of_supply=pos,vendor_name=vendor_name,
                              vendor_email=vendor_email,vendor_gst_no=vendor_gst,source_of_supply=sos,bill_no=bill_number, order_number=order_number, bill_date=bill_date, 
                              due_date=due_date,payment_terms=terms, sub_total=sub_total,igst=igst,sgst=sgst,cgst=cgst,tax_amount=tax_amnt, 
-                             shipping_charge=shipping,discount=discount, total=total, status=status,attachment=attachment,repeat_every=repeat_every,
+                             shipping_charge=shipping,total=total, status=status,attachment=attachment,repeat_every=repeat_every,
                              payment_method=payment_method,amt_paid=amt_paid,balance=balance,adjustment=adjustment)
         bill.save()
-        discount = 0 if request.POST.getlist['discount_amnt'] == " " else request.POST.getlist("discount[]")
+       
 
-        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
-            mapped = zip(item, quantity, rate, account, tax, amount)
+        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount) == len(hsn) == len(discount):
+            mapped = zip(item, quantity, rate, account, tax, amount, hsn, discount)
             mapped = list(mapped)
             for element in mapped:
                 created = PurchaseBillItems.objects.create(
-                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5],hsn=hsn)
+                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5], hsn=element[6], discount=element[7])
     return redirect('view_bills')
 
 
@@ -10381,7 +10377,7 @@ def update_bills(request,pk):
         bill.payment_method = request.POST['paymentmethod']
         bill.adjustment = request.POST['add_round_off']
         bill.amt_paid = request.POST['amtPaid']
-        bill.hsn = request.POST['HSN0']
+        
 
         bill.sub_total = request.POST['subtotal']
         bill.igst = request.POST['igst']
@@ -10395,8 +10391,7 @@ def update_bills(request,pk):
         amt_paid = request.POST['amtPaid']
         bill.balance = float(total) - float(amt_paid)
         
-        bill.discount = request.POST.getlist('discount[]')
-
+       
         old=bill.attachment
         new=request.FILES.get('file')
         if old != None and new == None:
@@ -10412,6 +10407,8 @@ def update_bills(request,pk):
         rate = request.POST.getlist('rate[]')
         tax = request.POST.getlist('tax[]')
         amount = request.POST.getlist('amount[]')
+        hsn = request.POST.getlist('hsn[]')
+        discount = request.POST.getlist('discount[]')
        
         # print(item)
         # print(quantity)
@@ -10423,12 +10420,12 @@ def update_bills(request,pk):
         objects_to_delete = PurchaseBillItems.objects.filter(purchase_bill_id=bill.id)
         objects_to_delete.delete()
  
-        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
-            mapped = zip(item, quantity, rate, account, tax, amount,discount)
+        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount) == len(hsn) == len(discount) and item and quantity and rate and account and tax and amount and hsn and discount:
+            mapped = zip(item, quantity, rate, account, tax, amount, hsn, discount)
             mapped = list(mapped)
             for element in mapped:
                 created = PurchaseBillItems.objects.create(
-                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5])
+                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5], hsn=element[6], discount=element[7])
     return redirect('bill_view',b_id = bill.id)
 
 def update_bills_save(request,pk):
@@ -10454,7 +10451,7 @@ def update_bills_save(request,pk):
         bill.payment_method = request.POST['paymentmethod']
         bill.adjustment = request.POST['add_round_off']
         bill.amt_paid = request.POST['amtPaid']
-        bill.hsn = request.POST['HSN0']
+        
 
         bill.sub_total = request.POST['subtotal']
         bill.igst = request.POST['igst']
@@ -10468,7 +10465,7 @@ def update_bills_save(request,pk):
         total = request.POST['total']
         amt_paid = request.POST['amtPaid']
         bill.balance = float(total) - float(amt_paid)
-        bill.discount = request.POST.getlist('discount[]')
+       
 
 
         old=bill.attachment
@@ -10486,25 +10483,27 @@ def update_bills_save(request,pk):
         rate = request.POST.getlist('rate[]')
         tax = request.POST.getlist('tax[]')
         amount = request.POST.getlist('amount[]')
+        hsn = request.POST.getlist('hsn[]')
+        discount = request.POST.getlist('discount[]')
         
        
-        # print(item)
-        # print(quantity)
-        # print(rate)
-        # print(discount)
-        # print(tax)
-        # print(amount)
+        print(item)
+        print(quantity)
+        print(rate)
+        print(discount)
+        print(tax)
+        print(amount)
 
         objects_to_delete = PurchaseBillItems.objects.filter(purchase_bill_id=bill.id)
         objects_to_delete.delete()
 
        
-        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount):
-            mapped = zip(item, quantity, rate, account, tax, amount)
+        if len(item) == len(quantity) == len(rate) == len(account) == len(tax) == len(amount) == len(hsn) == len(discount) and item and quantity and rate and account and tax and amount and hsn and discount:
+            mapped = zip(item, quantity, rate, account, tax, amount ,hsn, discount)
             mapped = list(mapped)
             for element in mapped:
                 created = PurchaseBillItems.objects.create(
-                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5])
+                    purchase_bill=bill, item_name=element[0], quantity=element[1], rate=element[2], account=element[3], tax_percentage=element[4], amount=element[5], hsn=element[6], discount=element[7])
     return redirect('bill_view',b_id = bill.id)
 
 
