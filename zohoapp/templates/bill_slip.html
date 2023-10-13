@@ -227,10 +227,6 @@
                             </div>
                             <div class="col-md-6 " style="text-align: right;">&#x20B9;{{bill.total}}.00</div>
                         </div>
-                    </td>
-                </tr>
-                <tr class="clickable-row" data-href="{% url 'bill_view' bill.id %}">
-                    <td>
                         <div class="row">
                             <div class="col-md-4">
                                 <p>{{bill.bill_no}}</p>
@@ -242,13 +238,10 @@
                                 <p>{{bill.status}}</p>
                             </div>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
                         <hr style="border-top: 1px solid white;">
                     </td>
                 </tr>
+                
 
                 {% endfor %}
             </table>

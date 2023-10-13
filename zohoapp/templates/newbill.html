@@ -146,12 +146,12 @@
     }
     // Calculate total
     $(document).ready(function () {
-        $('#shipping, #adjustment').on('keyup', function () {
+        $('#shipping, #adjustment').on('change', function () {
             var shipping_charge = parseFloat($('#shipping').val() || 0);
             var add_round_off = parseFloat($('#adjustment').val() || 0);
             var subtotal = parseFloat($('#subtotal').val() || 0);
             var total_tax = parseFloat($('#total_taxamount').val() || 0);
-            var total = subtotal + total_tax + shipping_charge - add_round_off;
+            var total = subtotal + total_tax + shipping_charge + add_round_off;
             // total = Math.round(total);
 
             // $('#shipping_charge').val(shipping_charge.toFixed(2));
