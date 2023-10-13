@@ -71,12 +71,13 @@
                 var qty = $(this).find('.qty').val();
                 var rate = $(this).find('.rate').val();
                 var tax = $(this).find('.tax').val();
+                var dic = $(this).find('.discount').val();
                 console.log(qty);
                 console.log(rate);
                 console.log(tax);
                 $(this).find('.taxamount').val((qty * rate) * (tax / 100));
                 var taxamount = parseFloat($(this).find('.taxamount').val());
-                $(this).find('.amount').val(qty * rate);
+                $(this).find('.amount').val((qty * rate)-dic);
 
                 calc_total();
             }
@@ -139,12 +140,12 @@
     }
     // Calculate total
     $(document).ready(function () {
-        $('#shipping, #discount').on('keyup', function () {
+        $('#shipping, #adjustment').on('keyup', function () {
             var shipping_charge = parseFloat($('#shipping').val() || 0);
-            var discount_amnt = parseFloat($('#discount').val() || 0);
+            var add_round_off = parseFloat($('#adjustment').val() || 0);
             var subtotal = parseFloat($('#subtotal').val() || 0);
             var total_tax = parseFloat($('#total_taxamount').val() || 0);
-            var total = subtotal + total_tax + shipping_charge - discount_amnt;
+            var total = subtotal + total_tax + shipping_charge - add_round_off;
             // total = Math.round(total);
 
             // $('#shipping_charge').val(shipping_charge.toFixed(2));
@@ -253,7 +254,7 @@ else{
 
               </div>
           </div>
-            <div class="row mb-4 " style="display: none;">
+            <div class="row mb-4 ">
                 <div class="col-sm-2"><label for="vendor_sos">Source Of Supply</label></div>
                 <div class="col-sm-10"><input type="text" id="sos" name="sos" class="form-control bg-white text-dark"
                         style="width: 50%;" value="{{bill.source_of_supply}}">
@@ -428,7 +429,7 @@ else{
                 </label>
             </div>
             <label for="">Price List</label><br>
-            <table class="table  text-black" id="item_table" style="background-color: rgba(250, 227, 198, 0.8);"
+            <table class="table  text-black" id="item_table" style="background-color: rgba(250, 227, 198, 0.8);display: block;overflow-x: auto;"
                 onchange="calc()">
                 <thead>
                     <tr>
@@ -461,8 +462,8 @@ else{
                                 </select></div>
                         </td>
                        
-                        <td class='text-right'><input  type="text" value="{{item.hsn}}"  name='HSN0' id="HSN0" placeholder='HSN' style="width: 80px;"
-                          class='bg-transparent border-0 text-black text-right qty'>
+                        <td class='text-right'><input  type="text" value="{{item.hsn}}"  name='HSN[]' id="HSN{{ forloop.counter }}" placeholder='HSN' style="width: 80px;" 
+                          class='bg-transparent border-0 text-black text-right HSN item_select itm'>
                         </td>
                         <td> 
                             <div class='form-group'>
@@ -695,7 +696,7 @@ else{
                         </td>
                         <td class='text-right'><input type='number' id='discount{{ forloop.counter }}'
                           class='bg-transparent border-0 text-black text-right discount' style="width: 80px;" name='discount[]'
-                          value="{{bill.discount}}"></td>
+                          value="{{item.discount}}"></td>
                         <td class='text-right'><input type='number' id='amount{{ forloop.counter }}'
                                 class='bg-transparent border-0 text-black text-right amount' name='amount[]'
                                 value="{{item.amount}}"></td>
@@ -2635,7 +2636,7 @@ select = $('#vendor_sel').val();
 
     // Add new row
     $(document).ready(function () {
-        $('#add-row').click(function () {
+        $('#add-row').click(function () {debugger
             var table = document.getElementById("item_table");
             var RowCount = table.rows.length;
             // console.log(RowCount);
@@ -2653,8 +2654,8 @@ select = $('#vendor_sel').val();
                             {% endfor %}
                         </select></div>
                 </td>
-                <td class='text-right'><input type='number' id='HSN0${RowCount}'
-                        class='bg-transparent border-0 text-black text-right discount' name='hsn[]' step="0.00" min="0"></td>
+                <td class='text-right'><input type='number' id='HSN${RowCount}'
+                        class='bg-transparent border-0 text-black text-right HSN' name='HSN[]' step="0.00" min="0"></td>
                 <td>
                     <div class='form-group'>
                         <select class='form-control bg-transparent text-black border-0 account '
@@ -2939,9 +2940,10 @@ select = $('#vendor_sel').val();
                             {% endfor %}
                         </select></div>
                 </td>
-                <td class='text-right'><input type='number' id='HSN0${RowCount}'
-                        class='bg-transparent border-0 text-black text-right discount' name='hsn[]' step="0.00" min="0"></td>
-                <td>
+                <td style="width: 50%;">
+                        <input type='number' id='HSN${RowCount}'
+                        class='bg-transparent border-0 text-black text-right HSN' name='HSN[]' step="0.00" min="0">
+                </td>
                 <td>
                     <div class='form-group'>
                         <select class='form-control bg-transparent text-black border-0 account '
@@ -3979,7 +3981,7 @@ $.ajax({
                     rate = response.rate
 
                     document.getElementById('rate1').value = rate
-                    document.getElementById('HSN0').value = response.hsn
+                    document.getElementById('HSN1').value = response.hsn
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
 
@@ -4013,7 +4015,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate2').value = rate;
-                    document.getElementById('HSN0').value = response.hsn
+                    document.getElementById('HSN2').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4032,7 +4034,7 @@ $.ajax({
 
         });
 
-        $(document).on('click', '#item3', function () {
+        $(document).on('click', '#item3', function () { 
             select = $('#item3').val();
             customer = $('#customer_sel').val();
             //console.log(select);
@@ -4048,6 +4050,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate3').value = rate;
+                    document.getElementById('HSN3').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4082,6 +4085,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate4').value = rate;
+                    document.getElementById('HSN4').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4116,6 +4120,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate5').value = rate;
+                    document.getElementById('HSN5').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4150,6 +4155,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate6').value = rate;
+                    document.getElementById('HSN6').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4184,6 +4190,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate7').value = rate;
+                    document.getElementById('HSN7').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4218,6 +4225,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate8').value = rate;
+                    document.getElementById('HSN8').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4252,6 +4260,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate9').value = rate;
+                    document.getElementById('HSN9').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4286,6 +4295,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate10').value = rate;
+                    document.getElementById('HSN10').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4323,6 +4333,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate11').value = rate;
+                    document.getElementById('HSN11').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4360,6 +4371,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate12').value = rate;
+                    document.getElementById('HSN12').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4397,6 +4409,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate13').value = rate;
+                    document.getElementById('HSN13').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4434,6 +4447,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate14').value = rate;
+                    document.getElementById('HSN14').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4471,6 +4485,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate15').value = rate;
+                    document.getElementById('HSN15').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4508,6 +4523,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate16').value = rate;
+                    document.getElementById('HSN16').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4545,6 +4561,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate17').value = rate;
+                    document.getElementById('HSN17').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4582,6 +4599,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate18').value = rate;
+                    document.getElementById('HSN18').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4619,6 +4637,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate19').value = rate;
+                    document.getElementById('HSN19').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4656,6 +4675,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate20').value = rate;
+                    document.getElementById('HSN20').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;
@@ -4693,6 +4713,7 @@ $.ajax({
                     //console.log(response)
                     rate = response.rate
                     document.getElementById('rate21').value = rate;
+                    document.getElementById('HSN21').value = response.hsn
 
                     var pos = document.getElementById("pos").value;
                     var sos = document.getElementById("sos").value;

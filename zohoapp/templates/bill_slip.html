@@ -370,9 +370,9 @@
                                         {% if bill.shipping_charge != 0 %}
                                         <h6 class="p-2" for="">Shipping Charge &nbsp;&nbsp; : {{ bill.shipping_charge|floatformat:3}}</h6>
                                         {% endif %}
-                                        {% if bill.discount != 0 %}
-                                        <h6 class="p-2" for="">Discount &nbsp;&nbsp;&nbsp;&nbsp; : {{ bill.discount|floatformat:3}}</h6>
-                                        {% endif %}
+                                        <!-- {% if items.discount != 0 %}
+                                        <h6 class="p-2" for="">Discount &nbsp;&nbsp;&nbsp;&nbsp; : {{ items.discount|floatformat:3}}</h6>
+                                        {% endif %} -->
                                         {% if bill.adjustment != 0 %}
                                         <h6 class="p-2" for="">Adjustment &nbsp;&nbsp;&nbsp;&nbsp; : {{ bill.adjustment|floatformat:3}}</h6>
                                         {% endif %}
@@ -385,7 +385,7 @@
                             
                         </div>
                         <div class="tab-pane fade  show active" id="template" role="tabpanel" aria-labelledby="profile-tab">
-                            <div class="slip m-3 p-5  bg-light" id="whatToPrint"
+                            <div class="slip m-3 p-5  bg-light" id="whatToPrint" style="overflow-x: auto;"
                                 style="box-shadow: 5px 5px 10px rgb(45, 45, 45);">
                                 <div class="ribbon">{{ bill.status }}</div>
                                 <div class="row ">
@@ -414,10 +414,9 @@
                                     </div>
                                     <div class="col-md-3  mt-auto" style="text-align: right;">
                                         <h6 class="text-dark">Deliver To:</h6>
-                                        <!-- <div class="text-right"> -->
-                                            <h6 class="text-dark ">{{ bill.customer_name }}</h6>
-                                            <h6 class="text-dark ">{{ bill.customer_email }}</h6>
-                                        <!-- </div> -->
+                                        <h6 class="text-dark ">{{ bill.customer_name }}</h6>
+                                        <h6 class="text-dark">{{ bill.customer_email }}</h6>
+                                       
                                         
                                     </div>
                                 </div>
@@ -441,7 +440,7 @@
                                             <td style="text-align: right;">{{ item.hsn }}</td>
                                             <td style="text-align: right;">{{ item.quantity }}</td>
                                             <td style="text-align: right;">{{ item.rate|floatformat:2 }}</td>
-                                            <td style="text-align: right;">{{ bill.discount|floatformat:2}}</td>
+                                            <td style="text-align: right;">{{ item.discount|floatformat:2}}</td>
                                             <td style="text-align: right;">{{ item.amount|floatformat:2 }}</td>
                                         </tr>
                                         {% endfor %}

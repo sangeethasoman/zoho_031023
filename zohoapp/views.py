@@ -10407,7 +10407,7 @@ def update_bills(request,pk):
         rate = request.POST.getlist('rate[]')
         tax = request.POST.getlist('tax[]')
         amount = request.POST.getlist('amount[]')
-        hsn = request.POST.getlist('hsn[]')
+        hsn = request.POST.getlist('HSN[]')
         discount = request.POST.getlist('discount[]')
        
         # print(item)
@@ -10483,16 +10483,18 @@ def update_bills_save(request,pk):
         rate = request.POST.getlist('rate[]')
         tax = request.POST.getlist('tax[]')
         amount = request.POST.getlist('amount[]')
-        hsn = request.POST.getlist('hsn[]')
+        hsn = request.POST.getlist('HSN[]')
         discount = request.POST.getlist('discount[]')
         
        
         print(item)
+        print(account)
         print(quantity)
         print(rate)
         print(discount)
         print(tax)
         print(amount)
+        print(hsn)
 
         objects_to_delete = PurchaseBillItems.objects.filter(purchase_bill_id=bill.id)
         objects_to_delete.delete()
