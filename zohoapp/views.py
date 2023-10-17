@@ -4833,7 +4833,7 @@ def create_recurring_bills(request):
         payment_method =request.POST['paymentmethod']
         amt_paid =request.POST['amtPaid']
 
-        hsn = request.POST.get('HSN0')
+        
         bill_no =  request.POST.get('bills')
         sub_total =request.POST['subtotal']
         adjustment =request.POST['add_round_off']
@@ -4844,7 +4844,7 @@ def create_recurring_bills(request):
 
         status = 'Save'
         # print(igst)
-        print(hsn)
+        
         if src_supply == company.state:
             tax1 = sgst + cgst
         else:
@@ -4882,12 +4882,13 @@ def create_recurring_bills(request):
         else:
             tax = request.POST.getlist("tax2[]")
 
-        discount = 0 if request.POST.getlist("discount[]") == " " else request.POST.getlist("discount[]")
+        discount = request.POST.getlist("discount[]") 
         amount = request.POST.getlist("amount[]")
+        hsn = request.POST.getlist('HSN[]')
 
-        if len(items)==len(accounts)==len(amount) == len(quantity) == len(rate)==len(tax) == len(discount) and items and accounts and quantity and rate and tax and discount and amount:
+        if len(items)==len(accounts)==len(amount) == len(quantity) == len(rate)==len(tax) == len(discount) == len(hsn) and items and accounts and quantity and rate and tax and discount and amount and hsn:
                 
-                mapped=zip(items,accounts,quantity,rate,tax,discount,amount)
+                mapped=zip(items,accounts,quantity,rate,tax,discount,amount,hsn)
                 mapped=list(mapped)
 
                 for ele in mapped:
@@ -4902,7 +4903,7 @@ def create_recurring_bills(request):
                         ac = ele[1]
                     
                     created = recurring_bills_items.objects.create(item = it,account = ac,quantity=ele[2],rate=ele[3],
-                    tax=ele[4],discount = ele[5],amount=ele[6],user = u,company = company, recur_bills = r_bill, hsn=hsn)
+                    tax=ele[4],discount = ele[5],amount=ele[6],hsn=ele[7], user = u,company = company, recur_bills = r_bill)
 
         return redirect('recurring_bill')
     return redirect('recurring_bill')
@@ -4984,12 +4985,13 @@ def draft_recurring_bills(request):
         else:
             tax = request.POST.getlist("tax2[]")
 
-        discount = 0 if request.POST.getlist("discount[]") == " " else request.POST.getlist("discount[]")
+        discount = request.POST.getlist("discount[]") 
         amount = request.POST.getlist("amount[]")
+        hsn = request.POST.getlist('HSN[]')
 
-        if len(items)==len(accounts)==len(amount) == len(quantity) == len(rate)==len(tax) == len(discount) and items and accounts and quantity and rate and tax and discount and amount:
+        if len(items)==len(accounts)==len(amount) == len(quantity) == len(rate)==len(tax) == len(discount) == len(hsn) and items and accounts and quantity and rate and tax and discount and amount and hsn:
                 
-                mapped=zip(items,accounts,quantity,rate,tax,discount,amount)
+                mapped=zip(items,accounts,quantity,rate,tax,discount,amount,hsn)
                 mapped=list(mapped)
 
                 for ele in mapped:
@@ -5004,7 +5006,7 @@ def draft_recurring_bills(request):
                         ac = ele[1]
                     
                     created = recurring_bills_items.objects.create(item = it,account = ac,quantity=ele[2],rate=ele[3],
-                    tax=ele[4],discount = ele[5],amount=ele[6],user = u,company = company, recur_bills = r_bill, hsn=hsn)
+                    tax=ele[4],discount = ele[5],amount=ele[6],hsn=ele[7], user = u,company = company, recur_bills = r_bill)
 
         return redirect('recurring_bill')
     return redirect('recurring_bill')
@@ -5087,7 +5089,7 @@ def change_recurring_bills(request,id):
         r_bill.grand_total=request.POST.get('grand_total')
         r_bill.payment_method =request.POST['paymentmethod']
         r_bill.amt_paid =request.POST['amtPaid']
-        r_bill.hsn = request.POST.get('HSN0')
+        
         r_bill.bill_no =  request.POST.get('bills')
         r_bill.adjustment =request.POST['add_round_off']
         r_bill.status = 'Save'
@@ -5117,12 +5119,13 @@ def change_recurring_bills(request,id):
         else:
             tax = request.POST.getlist("tax2[]")
 
-        discount = 0 if request.POST.getlist("discount[]") == " " else request.POST.getlist("discount[]")
+        discount = request.POST.getlist("discount[]") 
         amount = request.POST.getlist("amount[]")
+        hsn = request.POST.getlist('HSN[]')
 
-        if len(items)==len(accounts)==len(amount) == len(quantity) == len(rate)==len(tax) == len(discount) and items and accounts and quantity and rate and tax and discount and amount:
+        if len(items)==len(accounts)==len(amount) == len(quantity) == len(rate)==len(tax) == len(discount) == len(hsn) and items and accounts and quantity and rate and tax and discount and amount and hsn:
                 
-            mapped=zip(items,accounts,quantity,rate,tax,discount,amount)
+            mapped=zip(items,accounts,quantity,rate,tax,discount,amount,hsn)
             mapped=list(mapped)
 
             
@@ -5145,14 +5148,14 @@ def change_recurring_bills(request,id):
                         ac = ele[1]
                     
                     created = recurring_bills_items.objects.get_or_create(item = it,account = ac,quantity=ele[2],rate=ele[3],
-                    tax=ele[4],discount = ele[5],amount=ele[6],recur_bills=r_bill.id,company=company,user = request.user)
+                    tax=ele[4],discount = ele[5],amount=ele[6],hsn=ele[7],recur_bills=r_bill.id,company=company,user = request.user)
 
 
                 else:
                     
                     dbs=recurring_bills_items.objects.get(recur_bills =r_bill.id,item = ele[0],account=ele[1])
                     created = recurring_bills_items.objects.filter(recur_bills =dbs.recur_bills,items = ele[0],account=ele[1]).update(item = ele[0],
-                        account = ele[1],quantity=ele[2],rate=ele[3], tax=ele[4],discount=ele[5],amount= ele[6])
+                        account = ele[1],quantity=ele[2],rate=ele[3], tax=ele[4],discount=ele[5],amount= ele[6],hsn= ele[7])
  
 
         return redirect('view_recurring_bills',id)
@@ -5187,7 +5190,7 @@ def change_draft_recurring_bills(request,id):
         r_bill.grand_total=request.POST.get('grand_total')
         r_bill.payment_method =request.POST['paymentmethod']
         r_bill.amt_paid =request.POST['amtPaid']
-        r_bill.hsn = request.POST.get('HSN0')
+       
         r_bill.bill_no =  request.POST.get('bills')
         r_bill.adjustment =request.POST['add_round_off']
         r_bill.status = 'Draft'
@@ -5215,12 +5218,13 @@ def change_draft_recurring_bills(request,id):
         else:
             tax = request.POST.getlist("tax2[]")
 
-        discount = 0 if request.POST.getlist("discount[]") == " " else request.POST.getlist("discount[]")
+        discount = request.POST.getlist("discount[]") 
         amount = request.POST.getlist("amount[]")
+        hsn = request.POST.getlist('HSN[]')
 
-        if len(items)==len(accounts)==len(amount) == len(quantity) == len(rate)==len(tax) == len(discount) and items and accounts and quantity and rate and tax and discount and amount:
+        if len(items)==len(accounts)==len(amount) == len(quantity) == len(rate)==len(tax) == len(discount) == len(hsn) and items and accounts and quantity and rate and tax and discount and amount and hsn:
                 
-            mapped=zip(items,accounts,quantity,rate,tax,discount,amount)
+            mapped=zip(items,accounts,quantity,rate,tax,discount,amount,hsn)
             mapped=list(mapped)
 
             
@@ -5243,14 +5247,14 @@ def change_draft_recurring_bills(request,id):
                         ac = ele[1]
                     
                     created = recurring_bills_items.objects.get_or_create(item = it,account = ac,quantity=ele[2],rate=ele[3],
-                    tax=ele[4],discount = ele[5],amount=ele[6],recur_bills=r_bill.id,company=company,user = request.user)
+                    tax=ele[4],discount = ele[5],amount=ele[6],hsn=ele[7],recur_bills=r_bill.id,company=company,user = request.user)
 
 
                 else:
                     
                     dbs=recurring_bills_items.objects.get(recur_bills =r_bill.id,item = ele[0],account=ele[1])
                     created = recurring_bills_items.objects.filter(recur_bills =dbs.recur_bills,items = ele[0],account=ele[1]).update(item = ele[0],
-                        account = ele[1],quantity=ele[2],rate=ele[3], tax=ele[4],discount=ele[5],amount= ele[6])
+                        account = ele[1],quantity=ele[2],rate=ele[3], tax=ele[4],discount=ele[5],amount= ele[6],hsn=ele[7])
  
 
         return redirect('view_recurring_bills',id)
@@ -5506,8 +5510,9 @@ def get_vendordet(request):
     vemail = vdr.vendor_email
     gstnum = vdr.gst_number
     gsttr = vdr.gst_treatment
+    source_supply = vdr.source_supply
 
-    return JsonResponse({'vendor_email' :vemail, 'gst_number' : gstnum,'gst_treatment':gsttr},safe=False)
+    return JsonResponse({'vendor_email' :vemail, 'gst_number' : gstnum,'gst_treatment':gsttr,'source_supply':source_supply},safe=False)
 
 @login_required(login_url='login')
 def get_customerdet(request):
@@ -5518,7 +5523,7 @@ def get_customerdet(request):
     email = cust.customerEmail
     cust_id=id
     cust_place_supply=cust.placeofsupply
-    gstin = 0
+    gstin = cust.GSTIN
     gsttr = cust.GSTTreatment
     cstate = cust.placeofsupply.split("] ")[1:]
     print(email)
@@ -15725,7 +15730,7 @@ def update_adjustment(request,id):
          
     return redirect("inventory_adjustment")
 
-#----------------------------Recurring Bills, Sangeetha Soman--------------------------------------#
+#----------------------------Recurring Bills, Purchase Bills Sangeetha Soman--------------------------------------#
 @login_required(login_url='login')
 def add_repeat(request):
     
@@ -15788,7 +15793,7 @@ def delete_rec_comments(request,id,commentid):
         return redirect('view_recurring_bills',id)
 
 
-# -------------------Purchase Bill, Sangeetha Soman--------------------------------------
+
 
     
 def delete_purchase_bill(request,id):

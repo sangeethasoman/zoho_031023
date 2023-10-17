@@ -152,13 +152,13 @@
         </div>
       </div>
 
-      <!-- <div class="row mt-5 mb-5">
+      <div class="row mt-2 mb-2">
         <div class="col-md-3">
-          <label style="color: rgb(190, 88, 88);">Source of Supply*</label>
+          <label>Source of Supply*</label>
         </div>
 
         <div class="col-md-6">
-            <select name="srcofsupply" id="srcofsupply" class="form-control text-dark bg-light">
+            <select class="form-control text-dark bg-light"  name="srcofsupply" id="srcofsupply">
                 <option value="{{recur_bills.source_supply}}" selected>{{recur_bills.source_supply}}</option>    
 
                 <option value="[AN] Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
@@ -202,7 +202,7 @@
             </select>
             
         </div>
-      </div> -->
+      </div> 
       
       
 
@@ -357,7 +357,7 @@
           <label for="srcofsupply">Source Of Supply</label>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control text-dark bg-light"  id="srcofsupply" name="srcofsupply"  >
+          <input type="text" class="form-control text-dark bg-light"  id="csrcofsupply" name="csrcofsupply"  >
         </div>
       </div>
 
@@ -415,7 +415,7 @@
                   </div>  
                 </td>
                 <td  style="width: 50%;">
-                  <input type="text" value="{{ri.hsn}}" name='HSN0' id="HSN0" placeholder='HSN' class="form-control HSN text-dark bg-light" />
+                  <input type="text" value="{{ri.hsn}}" name='HSN[]' id="HSN0" placeholder='HSN' class="form-control HSN text-dark bg-light" />
                 </td>
 
                 <td  style="width: 20%;">
@@ -2416,6 +2416,7 @@ function toggleDateInput() {
                 $('#email_inp').val(" " +data.vendor_email);
                 $('#gstin_inp').val(" " +data.gst_number);
                 $('#gst_trt_inp').val(" "+data.gst_treatment);
+                $("#srcofsupply").val(data.source_supply.replace('-',' ')).attr("selected","selected");
 
             }
         });
@@ -2451,6 +2452,8 @@ $(document).ready(function() {
                 $('#email_inp').val(" " +data.vendor_email);
                 $('#gstin_inp').val(" " +data.gst_number);
                 $('#gst_trt_inp').val(" "+data.gst_treatment);
+                $('#gst_trt_inp').val(" "+data.gst_treatment);
+                $("#srcofsupply").val(data.source_supply.replace('-',' ')).attr("selected","selected");
 
             }
         });
@@ -2482,7 +2485,7 @@ $(document).ready(function() {
               // $("#cgst_trt_row").removeClass('d-none');
               // $("#cgst_trt_row").addClass('d-flex');
               $('#cemail_inp').val(' '+ data.customer_email);
-              $('#srcofsupply').val(' '+ data.cust_place_supply);
+              $('#csrcofsupply').val(' '+ data.cust_place_supply);
               $('#cgst_trt_inp').val(' ' +data.gst_treatment);
               //srcofsupply();
               if( data.gst_treatment == 'Registered Business-Regular Business that is registered under GST'){
@@ -2519,7 +2522,7 @@ $(document).ready(function() {
 function srcofsupply(){ debugger
   $(".selecttax").removeClass('d-none');
   $(".selecttax").addClass('d-flex');
-  var st = $("#srcofsupply").val().split(" ").slice(1).join(" ").trim();
+  var st = $("#csrcofsupply").val().split(" ").slice(1).join(" ").trim();
   console.log(st)
   if( st == $("#company_state").val())
   {
@@ -2572,7 +2575,7 @@ $(document).ready(function() {
             type : 'POST',
 
             success: function(data) {
-
+debugger
               // $("#cemail_row").removeClass('d-none');
               // $("#cemail_row").addClass('d-flex');
               
@@ -2580,7 +2583,7 @@ $(document).ready(function() {
               // $("#cgst_trt_row").addClass('d-flex');
               $('#cemail_inp').val(' '+ data.customer_email);
               $('#cgst_trt_inp').val(' ' +data.gst_treatment);
-              $('#srcofsupply').val(' '+ data.cust_place_supply); 
+              $('#csrcofsupply').val(' '+ data.cust_place_supply); 
               srcofsupply();
 
               if( data.gst_treatment == 'Registered Business-Regular Business that is registered under GST'){
@@ -2848,6 +2851,7 @@ $(document).ready(function() {
     var inter = row.find(".tax2");
     var clone = row.find(".clone_row");
     var rm = row.find(".remove_row");
+    var hsn = row.find(".HSN");
 
     newRow.each(function(index) {
         var idPrefix = 'addr';
@@ -2924,6 +2928,14 @@ $(document).ready(function() {
       var newId = idPrefix + roinc ;
       newRow.find('.tax2').eq(index).val(value8).attr('id' , newId);
     });
+
+    hsn.each(function(index){
+      var value9 = $(this).val();
+      var idPrefix = 'HSN';
+      var newId = idPrefix + roinc ;
+      newRow.find('.HSN').eq(index).val(value9).attr('id' , newId);
+    });
+
     var buttonCell = $('<td>').append(`
             <button type="button" id="${roinc}" class="btn btn-outline-primary clone_row text-center mb-1 p-1 " data-toggle= "tooltip" data-placement="bottom" tooltip="Clone"
                 style = "width:25px; height: 25px; border-radius: 90% " >
@@ -2997,6 +3009,10 @@ $(document).on('click','.remove_row',function(){
         var new_td_id = 'item' + (index * 1 + tdIndex);
         $(this).attr('id', new_td_id);
       });
+      $(this).find('input[id^="HSN"]').each(function(tdIndex) {
+          var new_td_id = 'HSN' + (index * 1 + tdIndex);
+          $(this).attr('id', new_td_id);
+        });
       $(this).find('select[id^="account"]').each(function(tdIndex) {
         var new_td_id = 'account' + (index * 1 + tdIndex);
         $(this).attr('id', new_td_id);
@@ -3025,14 +3041,22 @@ $(document).on('click','.remove_row',function(){
         var new_td_id = 'inter_tax' + (index * 1 + tdIndex);
         $(this).attr('id', new_td_id);
       });
-      $(this).find('button').each(function(tdIndex) {
-        var new_td_id = (index * 1 + tdIndex);
-        $(this).attr('id', new_td_id);
-      });
-      $(this).find('button[class="remove_row"]').each(function(tdIndex) {
-        var new_td_id1 = ((index * 1) + tdIndex);
-        $(this).attr('id', new_td_id1);
-      });
+      $(this).find('.clone_row').each(function(tdIndex) {
+          var new_td_id = (index * 1 + tdIndex);
+          $(this).attr('id', new_td_id);
+        });
+        $(this).find('.remove_row').each(function(tdIndex) {
+          var new_td_id = (index * 1 + tdIndex);
+          $(this).attr('id', new_td_id);
+        });
+      // $(this).find('button').each(function(tdIndex) {
+      //   var new_td_id = (index * 1 + tdIndex);
+      //   $(this).attr('id', new_td_id);
+      // });
+      // $(this).find('button[class="remove_row"]').each(function(tdIndex) {
+      //   var new_td_id1 = ((index * 1) + tdIndex);
+      //   $(this).attr('id', new_td_id1);
+      // });
       var row_c = $("#items-table-body tr").length;
       var amount_t = 0;
       var tax = 0;
@@ -3718,30 +3742,6 @@ function reloadAccount() {
   });
 }
 
-
-$(document).ready(function() {
-  $("#item0").change(function() {
-    $.ajax({
-      url: "{% url 'get_rate' %}",
-      type : 'POST',
-      data:{
-          id : $("#item0").val(),
-      
-          csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-    
-      success: function(response) {
-        $("#rate0").val(response.rate);
-        $("#HSN0").val(response.hsn);
-
-
-
-      },
-    });
-  });
-});
-
-
   function showRate(id,name) {
     
     var n = id.slice(4);
@@ -3755,7 +3755,7 @@ $(document).ready(function() {
     
       success: function(response) {
         $("#rate" +n).val(response.rate);
-
+        $("#HSN" +n).val(response.hsn);
       },
     });
 
